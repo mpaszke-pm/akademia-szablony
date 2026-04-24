@@ -416,6 +416,7 @@
   }
 
   function wczytajStan() {
+    if (document.body.getAttribute('data-downloaded') === 'true') return;
     const raw = localStorage.getItem(LS_KEY);
     if (!raw) return;
     try {
@@ -469,6 +470,7 @@
     });
 
     klon.querySelectorAll('.pobierz-section').forEach(el => el.remove());
+    klon.querySelector('body').setAttribute('data-downloaded', 'true');
     const html = '<!DOCTYPE html>\n' + klon.outerHTML;
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const url  = URL.createObjectURL(blob);
