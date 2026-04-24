@@ -440,15 +440,34 @@
   function pobierzFormularz() {
     zapiszStan();
     const klon = document.documentElement.cloneNode(true);
-    const inputsOryg = document.querySelectorAll('input, select, textarea');
-    const inputsKlon = klon.querySelectorAll('input, select, textarea');
-    inputsOryg.forEach((el, i) => {
-      const kl = inputsKlon[i];
-      if (!kl) return;
-      if (el.tagName === 'TEXTAREA') kl.textContent = el.value;
-      else if (el.type === 'radio') kl.checked = el.checked;
-      else kl.setAttribute('value', el.value);
+
+    // Textarea — zawartość jako innerHTML z escape'owaniem
+    const tOryg = document.querySelectorAll('textarea');
+    const tKlon = klon.querySelectorAll('textarea');
+    tOryg.forEach((el, i) => {
+      if (!tKlon[i]) return;
+      tKlon[i].innerHTML = el.value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
     });
+
+    // Input text/email — wartość jako atrybut HTML
+    const inpOryg = document.querySelectorAll('input[type="text"], input[type="email"]');
+    const inpKlon = klon.querySelectorAll('input[type="text"], input[type="email"]');
+    inpOryg.forEach((el, i) => {
+      if (inpKlon[i]) inpKlon[i].setAttribute('value', el.value);
+    });
+
+    // Radio buttons — stan jako atrybut HTML
+    const radOryg = document.querySelectorAll('input[type="radio"]');
+    const radKlon = klon.querySelectorAll('input[type="radio"]');
+    radOryg.forEach((el, i) => {
+      if (!radKlon[i]) return;
+      if (el.checked) radKlon[i].setAttribute('checked', 'checked');
+      else radKlon[i].removeAttribute('checked');
+    });
+
     klon.querySelectorAll('.pobierz-section').forEach(el => el.remove());
     const html = '<!DOCTYPE html>\n' + klon.outerHTML;
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
