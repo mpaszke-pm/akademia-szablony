@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>W4 — Test 4 Godzin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:       #1d4d3f;
+      --teal-dark:  #163a2f;
+      --teal-light: #eef2ee;
+      --teal-mid:   #c2d4ce;
+      --orange:     #E86B2A;
+      --text:       #1a1a1a;
+      --muted:      #555;
+      --border:     #d4ddd8;
+      --bg:         #f5f2eb;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 40px 20px;
+      padding-top: 72px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 14px;
+      padding: 48px 52px;
+      box-shadow: 0 2px 20px rgba(29,77,63,0.10);
+    }
+
+    /* HEADER */
+    .header { border-bottom: 3px solid var(--teal); padding-bottom: 20px; margin-bottom: 28px; }
+    .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: var(--teal-dark); }
+    .header .subtitle { font-size: 14px; color: var(--muted); margin-top: 6px; }
+    .deadline { display: inline-block; margin-top: 12px; background: var(--teal); color: #fff; font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 4px; letter-spacing: 0.3px; }
+
+    /* CALLOUTS */
+    .callout { background: var(--teal-light); border-left: 4px solid var(--teal); padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 28px; font-size: 14px; color: var(--muted); line-height: 1.65; }
+    .callout-warn { background: #fdf6e3; border-left-color: #b8860b; color: #4a3a10; }
+
+    /* THREE TRACKS */
+    .three-track { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+    .track-item { border-left: 4px solid; padding: 10px 16px; border-radius: 0 6px 6px 0; }
+    .track-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 3px; }
+    .track-text { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+    .track-owner   { border-color: var(--orange); background: #fdf1eb; }
+    .track-owner   .track-label { color: var(--orange); }
+    .track-manager { border-color: #4CC9C0; background: #ebf8f7; }
+    .track-manager .track-label { color: #0e8a84; }
+    .track-solo    { border-color: #9b59b6; background: #f5eefb; }
+    .track-solo    .track-label { color: #7d3c98; }
+
+    /* WARIANT SELECTOR */
+    .wariant-selektor { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+    .wariant-card {
+      flex: 1; min-width: 200px; border: 2px solid var(--border); border-radius: 10px;
+      padding: 16px 18px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .wariant-card:hover { border-color: var(--teal-mid); background: var(--teal-light); }
+    .wariant-card.aktywny { border-color: var(--teal); background: var(--teal-light); }
+    .wariant-card input[type="radio"] { margin-top: 2px; accent-color: var(--teal); flex-shrink: 0; }
+    .wariant-card-body {}
+    .wariant-card-title { font-size: 13px; font-weight: 700; color: var(--teal-dark); margin-bottom: 4px; }
+    .wariant-card-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    /* KROK */
+    .krok { margin-bottom: 40px; }
+    .krok-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .krok-num { width: 36px; height: 36px; background: var(--teal); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; }
+    .krok-header h2 { font-size: 17px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--teal-dark); }
+    .krok p { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+
+    /* FIELD ROWS */
+    .field-block { margin-bottom: 20px; }
+    .field-block input[type="text"] {
+      width: 100%; border: none; border-bottom: 2px solid var(--teal);
+      outline: none; font-size: 15px; padding: 6px 4px;
+      background: transparent; font-family: inherit; color: var(--text);
+    }
+    .field-block textarea {
+      width: 100%; border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px 14px; font-size: 14px; font-family: inherit; color: var(--text);
+      resize: vertical; outline: none; line-height: 1.6; min-height: 90px;
+    }
+    .field-block textarea:focus { border-color: var(--teal); }
+    .field-hint { font-size: 12.5px; color: #888; font-style: italic; margin-top: 6px; }
+
+    /* PYTANIE DEBRIEF */
+    .pytanie-blok { margin-bottom: 28px; }
+    .pytanie-nr { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--teal); background: var(--teal-light); border-radius: 4px; display: inline-block; padding: 3px 10px; margin-bottom: 10px; }
+    .pytanie-box { background: var(--teal-light); border-left: 4px solid var(--teal); padding: 14px 18px; border-radius: 0 8px 8px 0; margin-bottom: 10px; font-size: 14.5px; font-weight: 600; color: var(--teal-dark); line-height: 1.6; }
+    textarea.pole-tekstowe { width: 100%; min-height: 110px; border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-size: 14px; font-family: inherit; color: var(--text); resize: vertical; outline: none; line-height: 1.6; }
+    textarea.pole-tekstowe:focus { border-color: var(--teal); }
+    .pole-hint { font-size: 12px; color: #999; font-style: italic; margin-top: 6px; }
+
+    /* ODDANIE */
+    .oddanie { background: var(--teal); color: #fff; border-radius: 10px; padding: 24px 28px; margin-top: 8px; }
+    .oddanie h2 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+    .oddanie p { font-size: 13.5px; line-height: 1.65; color: rgba(255,255,255,0.85); margin-bottom: 8px; }
+    .oddanie p strong { color: #fff; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
+    .note { font-size: 12.5px; color: #888; font-style: italic; margin-top: 6px; }
+
+    /* POBIERZ */
+    .pobierz-section { margin-top: 20px; padding: 20px 24px; background: var(--teal-light); border-radius: 10px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .btn-pobierz { display: flex; align-items: center; gap: 10px; background: var(--teal); color: #fff; border: none; font-size: 14px; font-weight: 700; font-family: inherit; padding: 11px 24px; border-radius: 7px; cursor: pointer; transition: background 0.15s; }
+    .btn-pobierz:hover { background: var(--teal-dark); }
+    .pobierz-info { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* AUTOSAVE */
+    .autosave-bar { position: fixed; top: 0; left: 0; right: 0; background: var(--teal-dark); color: #fff; font-size: 12px; font-family: 'Segoe UI', Arial, sans-serif; padding: 6px 20px; display: flex; align-items: center; gap: 10px; z-index: 999; }
+    .autosave-bar span { opacity: 0.85; }
+    .autosave-bar .as-status { font-weight: 600; opacity: 1; }
+
+    /* DEBRIEF SECTION */
+    .debrief-section { display: none; }
+    .debrief-section.aktywna { display: block; }
+
+    /* PLACEHOLDER INFO */
+    .wariant-placeholder { text-align: center; padding: 40px 20px; border: 2px dashed var(--border); border-radius: 10px; color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+    .wariant-placeholder strong { display: block; font-size: 16px; color: var(--teal); margin-bottom: 8px; }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .container { box-shadow: none; padding: 20px; }
+      .pobierz-section, .autosave-bar { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 28px 20px; }
+      .wariant-selektor { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="autosave-bar">
+  <span>&#128190;</span>
+  <span>Postęp zapisuje się automatycznie w tej przeglądarce.</span>
+  <span class="as-status" id="as-status">Możesz zamknąć i wrócić później.</span>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Test 4 Godzin</h1>
+    <div class="subtitle">Zadanie W4 &nbsp;|&nbsp; Akademia Managera &nbsp;|&nbsp; prowadząca: Urszula Łaskawiec</div>
+    <div class="deadline">Happyline: 04.05.2026 (poniedziałek), godz. 23:59</div>
+  </div>
+
+  <!-- DANE UCZESTNIKA -->
+  <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:28px;">
+    <div style="flex:1; min-width:200px;">
+      <label style="display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:6px;">Imię i nazwisko</label>
+      <input type="text" id="uczestnik-imie" placeholder="np. Anna Kowalska" style="width:100%; border:none; border-bottom:2px solid var(--teal); outline:none; font-size:15px; padding:6px 4px; background:transparent; font-family:inherit; color:var(--text);" oninput="zapiszStan()">
+    </div>
+    <div style="flex:1; min-width:200px;">
+      <label style="display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:6px;">Adres e-mail</label>
+      <input type="email" id="uczestnik-email" placeholder="np. anna@gabinet.pl" style="width:100%; border:none; border-bottom:2px solid var(--teal); outline:none; font-size:15px; padding:6px 4px; background:transparent; font-family:inherit; color:var(--text);" oninput="zapiszStan()">
+    </div>
+  </div>
+
+  <!-- UWAGA TECHNICZNA -->
+  <div class="callout callout-warn">
+    <strong>Zanim zaczniesz — ważna informacja techniczna:</strong><br><br>
+    Ten formularz zapisuje Twój postęp automatycznie w przeglądarce, z której korzystasz.
+    Możesz go zamknąć i wrócić później — dane będą czekać.<br><br>
+    <strong>Przez cały czas wypełniania używaj tego samego komputera i tej samej przeglądarki.</strong>
+    Jeśli otworzysz plik na innym urządzeniu lub w innej przeglądarce, zaczniesz od pustego formularza.
+  </div>
+
+  <!-- OPIS WARIANTÓW -->
+  <div class="three-track">
+    <div class="track-item track-owner">
+      <div class="track-label">Wariant A — Właściciel</div>
+      <div class="track-text">Przeprowadzasz test nieobecności: przez 4 godziny fizycznie lub komunikacyjnie odcinasz się od gabinetu. Zespół lub manager zarządza samodzielnie. Po teście wypełniasz debrief — co się wydarzyło, kto decydował, co odkryłeś/aś o swoim gabinecie.</div>
+    </div>
+    <div class="track-item track-manager">
+      <div class="track-label">Wariant B — Manager z własnym zespołem</div>
+      <div class="track-text">Przez 4 godziny przejmujesz pełną decyzyjność — działasz jak właściciel gabinetu. Rozwiązujesz sytuacje bez eskalacji, samodzielnie reagujesz na to, co się dzieje. Po teście opisujesz co zrobiłeś/aś, co było trudne i co odkryłeś/aś o sobie i gabinecie.</div>
+    </div>
+    <div class="track-item track-solo">
+      <div class="track-label">Wariant C — Manager bez własnego zespołu</div>
+      <div class="track-text">Rezerwujesz 4-godzinny blok autonomiczny — działasz bez pytania o zdanie, bez konsultacji, bez czekania na zatwierdzenie. Podejmujesz decyzje i realizujesz zadania na własną odpowiedzialność. Po teście opisujesz, co zrobiłeś/aś i co to odkryło w Twoim stylu pracy.</div>
+    </div>
+  </div>
+
+  <hr class="divider" style="margin:20px 0 28px;">
+
+  <!-- WYBÓR WARIANTU -->
+  <div class="krok">
+    <div class="krok-header">
+      <div class="krok-num">1</div>
+      <h2>Wybierz swój wariant</h2>
+    </div>
+    <p>Wybierz wariant, który opisuje Twoją rolę w gabinecie. Formularz debriefu dopasuje się automatycznie.</p>
+
+    <div class="wariant-selektor">
+      <label class="wariant-card" id="card-A" onclick="wybierzWariant('A')">
+        <input type="radio" name="wariant" value="A" id="radio-A">
+        <div class="wariant-card-body">
+          <div class="wariant-card-title">Wariant A</div>
+          <div class="wariant-card-desc">Właściciel — test nieobecności</div>
+        </div>
+      </label>
+      <label class="wariant-card" id="card-B" onclick="wybierzWariant('B')">
+        <input type="radio" name="wariant" value="B" id="radio-B">
+        <div class="wariant-card-body">
+          <div class="wariant-card-title">Wariant B</div>
+          <div class="wariant-card-desc">Manager z zespołem — pełna decyzyjność</div>
+        </div>
+      </label>
+      <label class="wariant-card" id="card-C" onclick="wybierzWariant('C')">
+        <input type="radio" name="wariant" value="C" id="radio-C">
+        <div class="wariant-card-body">
+          <div class="wariant-card-title">Wariant C</div>
+          <div class="wariant-card-desc">Manager bez zespołu — autonomiczny blok</div>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- DEBRIEF -->
+  <div class="krok">
+    <div class="krok-header">
+      <div class="krok-num">2</div>
+      <h2>Debrief — 5 pytań</h2>
+    </div>
+    <p>Odpowiedz na każde pytanie konkretnie. Nie: „Poszło dobrze." Tak: opisz sytuację, decyzję, obserwację — co dokładnie się wydarzyło i co z tego wynika.</p>
+
+    <!-- PLACEHOLDER gdy nie wybrano wariantu -->
+    <div id="wariant-placeholder" class="wariant-placeholder">
+      <strong>&#8679; Wybierz wariant powyżej</strong>
+      Pytania do Twojego debriefu pojawią się tutaj po wybraniu wariantu.
+    </div>
+
+    <!-- WARIANT A — Właściciel -->
+    <div id="debrief-A" class="debrief-section">
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 1 / 5</div>
+        <div class="pytanie-box">Opisz co wydarzyło się w gabinecie podczas Twojej 4-godzinnej nieobecności. Kto podejmował decyzje? Jakie były sytuacje wymagające reakcji?</div>
+        <textarea class="pole-tekstowe" id="A_odp1" placeholder="Opisz konkretnie — jakie sytuacje się pojawiły, kto zareagował i jak." oninput="zapiszStan()"></textarea>
+      </div>
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 2 / 5</div>
+        <div class="pytanie-box">Co działało samodzielnie, a co wymagało Twojej interwencji lub kontaktu z Tobą?</div>
+        <textarea class="pole-tekstowe" id="A_odp2" placeholder="Co przebiegło bez Ciebie? W jakich momentach ktoś się z Tobą skontaktował i dlaczego?" oninput="zapiszStan()"></textarea>
+      </div>
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 3 / 5</div>
+        <div class="pytanie-box">Jakie decyzje podjął za Ciebie zespół lub manager? Czy te decyzje były trafne?</div>
+        <textarea class="pole-tekstowe" id="A_odp3" placeholder="Wymień konkretne decyzje. Oceń je — co zaakceptowałeś/aś, co byś zmienił/a i dlaczego?" oninput="zapiszStan()"></textarea>
+      </div>
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 4 / 5</div>
+        <div class="pytanie-box">Co odkryłeś/aś o swojej roli i zależnościach w gabinecie na podstawie tego testu?</div>
+        <textarea class="pole-tekstowe" id="A_odp4" placeholder="Jakie zależności wyszły na jaw? Co gabinet robi dobrze bez Ciebie, a gdzie jesteś wciąż niezastąpiony/a — i czy to dobrze?" oninput="zapiszStan()"></textarea>
+      </div>
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 5 / 5</div>
+        <div class="pytanie-box">Jeden konkretny wniosek: co zmienisz w strukturze zarządzania lub sposobie delegowania po tym teście?</div>
+        <textarea class="pole-tekstowe" id="A_odp5" placeholder="Jeden wniosek, jedno działanie. Konkretne — nie &quot;będę bardziej delegować&quot;, ale &quot;od poniedziałku X przejmuje decyzje dotyczące Y&quot;." oninput="zapiszStan()"></textarea>
+      </div>
+
+    </div>
+
+    <!-- WARIANT B — Manager z zespołem -->
+    <div id="debrief-B" class="debrief-section">
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 1 / 5</div>
+        <div class="pytanie-box">Opisz 4-godzinny blok — co się działo, jakie decyzje musiałeś/aś podjąć samodzielnie?</div>
+        <textarea class="pole-tekstowe" id="B_odp1" placeholder="Co konkretnie wydarzyło się w tym bloku? Jakie sytuacje wymagały Twojej reakcji?" oninput="zapiszStan()"></textarea>
+      </div>
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 2 / 5</div>
+        <div class="pytanie-box">Które decyzje były trudne lub nieoczywiste? Jak je rozwiązałeś/aś?</div>
+        <textarea class="pole-tekstowe" id="B_odp2" placeholder="Opisz konkretną sytuację — co było trudne, jakie miałeś/aś opcje i co ostatecznie zdecydowałeś/aś." oninput="zapiszStan()"></textarea>
+      </div>
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 3 / 5</div>
+        <div class="pytanie-box">Co poszło sprawnie, a gdzie brakowało Ci zasobów, informacji lub uprawnień?</div>
+        <textarea class="pole-tekstowe" id="B_odp3" placeholder="Co działało bez zarzutu? W czym czułeś/aś, że czegoś brakuje — i co to było konkretnie?" oninput="zapiszStan()"></textarea>
+      </div>
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 4 / 5</div>
+        <div class="pytanie-box">Co odkryłeś/aś o swojej roli w tym gabinecie w kontekście tej próby samodzielności?</div>
+        <textarea class="pole-tekstowe" id="B_odp4" placeholder="Jakie wnioski wyciągasz o sobie jako managerze? Co Cię zaskoczyło — pozytywnie lub negatywnie?" oninput="zapiszStan()"></textarea>
+      </div>
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 5 / 5</div>
+        <div class="pytanie-box">Jeden konkretny wniosek: co zmienisz w sobie lub w gabinecie po tym teście?</div>
+        <textarea class="pole-tekstowe" id="B_odp5" placeholder="Jeden wniosek, jedno działanie. Nie &quot;będę bardziej decydować&quot;, ale &quot;w przyszłości gdy zajdzie sytuacja X, zrobię Y&quot;." oninput="zapiszStan()"></textarea>
+      </div>
+
+    </div>
+
+    <!-- WARIANT C — Manager bez własnego zespołu -->
+    <div id="debrief-C" class="debrief-section">
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 1 / 5</div>
+        <div class="pytanie-box">W jakim obszarze przeprowadziłeś/aś test? Co robiłeś/aś przez te 4 godziny?</div>
+        <textarea class="pole-tekstowe" id="C_odp1" placeholder="Opisz konkretnie — jaki obszar wybrałeś/aś, co robiłeś/aś i jak wyglądał ten blok w praktyce." oninput="zapiszStan()"></textarea>
+      </div>
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 2 / 5</div>
+        <div class="pytanie-box">Jakie decyzje podjąłeś/aś samodzielnie — bez pytania kogokolwiek o zdanie? Wypisz je.</div>
+        <textarea class="pole-tekstowe" id="C_odp2" placeholder="Lista konkretnych decyzji — nawet małych. Nie ogólnie &quot;działałem/am samodzielnie&quot;, ale: &quot;zdecydowałem/am że..., wybrałem/am..., zrobiłem/am bez konsultacji...&quot;" oninput="zapiszStan()"></textarea>
+      </div>
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 3 / 5</div>
+        <div class="pytanie-box">Co chciałeś/aś skonsultować lub zatwierdzić, ale się powstrzymałeś/aś — i co się ostatecznie stało?</div>
+        <textarea class="pole-tekstowe" id="C_odp3" placeholder="Opisz konkretny moment: co chciałeś/aś skonsultować, co Cię powstrzymało i jaki był efekt Twojej samodzielnej decyzji." oninput="zapiszStan()"></textarea>
+      </div>
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 4 / 5</div>
+        <div class="pytanie-box">Gdybyś zarządzał/a gabinetem — który obszar chciałbyś/chciałabyś mieć jako pierwszy „swój"? Dlaczego właśnie ten?</div>
+        <textarea class="pole-tekstowe" id="C_odp4" placeholder="Konkretny obszar (np. grafik, onboarding nowych pacjentów, komunikacja z zespołem) — i konkretny powód: co Cię do niego ciągnie lub w czym czujesz gotowość." oninput="zapiszStan()"></textarea>
+      </div>
+
+      <div class="pytanie-blok">
+        <div class="pytanie-nr">Pytanie 5 / 5</div>
+        <div class="pytanie-box">Co ten test pokazał Ci o Twojej gotowości do samodzielnego zarządzania?</div>
+        <textarea class="pole-tekstowe" id="C_odp5" placeholder="Jeden konkretny wniosek — nie &quot;jestem gotowy/a&quot; ani &quot;nie jestem gotowy/a&quot;, ale: co konkretnie wiesz o sobie po tym teście, czego nie wiedziałeś/aś przed." oninput="zapiszStan()"></textarea>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- POBIERZ -->
+  <div class="pobierz-section">
+    <button class="btn-pobierz" onclick="pobierzFormularz()">&#8659; Pobierz wypełniony formularz</button>
+    <div class="pobierz-info">
+      Kliknij, gdy skończysz wypełniać.<br>
+      Pobierzesz gotowy plik do wysłania.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- JAK ODDAĆ -->
+  <div class="oddanie">
+    <h2>Jak oddać zadanie</h2>
+    <p>Pobierz wypełniony formularz przyciskiem powyżej, a następnie prześlij go przez formularz, do którego link znajdziesz w opisie tego zadania na platformie WebToLearn, pod nagraniem z LIVE W4 „Test 4 Godzin".</p>
+    <p style="margin-top:14px"><strong>Kryterium zaliczenia:</strong> konkretne odpowiedzi na wszystkie 5 pytań — opisane sytuacje, decyzje i obserwacje. Ogólniki nie wystarczą. Zaliczone albo niezaliczone.</p>
+    <p style="margin-top:10px"><strong>Feedback od Uli</strong> otrzymasz do czwartku 07.05.2026, godz. 23:59.</p>
+  </div>
+
+</div>
+
+<script>
+  const LS_KEY = 'w4_test4h';
+
+  // ── WARIANT ─────────────────────────────────────────────────────────────
+
+  function wybierzWariant(w) {
+    ['A','B','C'].forEach(v => {
+      document.getElementById('card-' + v).classList.toggle('aktywny', v === w);
+      document.getElementById('radio-' + v).checked = (v === w);
+      const sekcja = document.getElementById('debrief-' + v);
+      sekcja.classList.toggle('aktywna', v === w);
+    });
+    const ph = document.getElementById('wariant-placeholder');
+    if (ph) ph.style.display = 'none';
+    zapiszStan();
+  }
+
+  // ── AUTOSAVE ────────────────────────────────────────────────────────────
+
+  function zapiszStan() {
+    const aktywny = document.querySelector('input[name="wariant"]:checked');
+    const stan = {
+      imie:    document.getElementById('uczestnik-imie').value,
+      email:   document.getElementById('uczestnik-email').value,
+      wariant: aktywny ? aktywny.value : null
+    };
+    ['A','B','C'].forEach(v => {
+      [1,2,3,4,5].forEach(n => {
+        const el = document.getElementById(v + '_odp' + n);
+        if (el) stan[v + '_odp' + n] = el.value;
+      });
+    });
+    localStorage.setItem(LS_KEY, JSON.stringify(stan));
+    const st = document.getElementById('as-status');
+    if (st) {
+      const t = new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+      st.textContent = 'Ostatni zapis: ' + t;
+    }
+  }
+
+  function wczytajStan() {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    try {
+      const s = JSON.parse(raw);
+      const set = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined && val !== null) el.value = val; };
+      set('uczestnik-imie', s.imie);
+      set('uczestnik-email', s.email);
+
+      ['A','B','C'].forEach(v => {
+        [1,2,3,4,5].forEach(n => set(v + '_odp' + n, s[v + '_odp' + n]));
+      });
+
+      if (s.wariant) wybierzWariant(s.wariant);
+    } catch(e) {}
+  }
+
+  document.addEventListener('input', zapiszStan);
+  setInterval(zapiszStan, 10000);
+
+  // ── POBIERZ ─────────────────────────────────────────────────────────────
+
+  function pobierzFormularz() {
+    zapiszStan();
+    const klon = document.documentElement.cloneNode(true);
+    const inputsOryg = document.querySelectorAll('input, select, textarea');
+    const inputsKlon = klon.querySelectorAll('input, select, textarea');
+    inputsOryg.forEach((el, i) => {
+      const kl = inputsKlon[i];
+      if (!kl) return;
+      if (el.tagName === 'TEXTAREA') kl.textContent = el.value;
+      else if (el.type === 'radio') kl.checked = el.checked;
+      else kl.setAttribute('value', el.value);
+    });
+    klon.querySelectorAll('.pobierz-section').forEach(el => el.remove());
+    const html = '<!DOCTYPE html>\n' + klon.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      alert('Twój formularz otworzył się w nowej karcie.\n\nJak go zapisać na iPhone:\n1. Naciśnij ikonę udostępniania (prostokąt ze strzałką ↑)\n2. Wybierz „Zapisz na urządzeniu" lub „Pliki"\n3. Gotowe — wyślij przez formularz na WebToLearn.');
+      return;
+    }
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'W4_test4h_wypelniony.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Init
+  wczytajStan();
+</script>
+
+</body>
+</html>
