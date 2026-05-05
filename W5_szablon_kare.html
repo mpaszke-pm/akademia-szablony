@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>W5 — Rozmowy wg Metody KARE</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:       #1d4d3f;
+      --teal-dark:  #163a2f;
+      --teal-light: #eef2ee;
+      --teal-mid:   #c2d4ce;
+      --orange:     #E86B2A;
+      --text:       #1a1a1a;
+      --muted:      #555;
+      --border:     #d4ddd8;
+      --bg:         #f5f2eb;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 40px 20px;
+      padding-top: 72px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 14px;
+      padding: 48px 52px;
+      box-shadow: 0 2px 20px rgba(29,77,63,0.10);
+    }
+
+    /* HEADER */
+    .header { border-bottom: 3px solid var(--teal); padding-bottom: 20px; margin-bottom: 28px; }
+    .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: var(--teal-dark); }
+    .header .subtitle { font-size: 14px; color: var(--muted); margin-top: 6px; }
+    .deadline { display: inline-block; margin-top: 12px; background: var(--teal); color: #fff; font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 4px; letter-spacing: 0.3px; }
+
+    /* CALLOUTS */
+    .callout { background: var(--teal-light); border-left: 4px solid var(--teal); padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 20px; font-size: 14px; color: var(--muted); line-height: 1.65; }
+    .callout-warn { background: #fdf6e3; border-left-color: #b8860b; color: #4a3a10; }
+    .callout-info { background: #e8f4fd; border-left-color: #1a6fa3; color: #0d4d72; }
+
+    /* DANE UCZESTNIKA */
+    .dane-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+    .dane-row > div { flex: 1; min-width: 200px; }
+    .dane-label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+    .dane-row input {
+      width: 100%; border: none; border-bottom: 2px solid var(--teal);
+      outline: none; font-size: 15px; padding: 6px 4px;
+      background: transparent; font-family: inherit; color: var(--text);
+    }
+
+    /* PROGRESS */
+    .progress-bar { display: flex; align-items: center; gap: 16px; background: var(--teal-light); border-radius: 8px; padding: 12px 18px; margin-bottom: 28px; flex-wrap: wrap; }
+    .progress-label { font-size: 13px; color: var(--muted); white-space: nowrap; }
+    .progress-count { font-size: 15px; font-weight: 700; color: var(--teal-dark); white-space: nowrap; }
+    .progress-track { flex: 1; min-width: 120px; height: 8px; background: var(--teal-mid); border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--teal); border-radius: 4px; transition: width 0.3s; width: 0%; }
+
+    /* ROZMOWA BLOK */
+    .rozmowa-blok {
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 22px 26px; margin-bottom: 16px; background: #fff;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .rozmowa-blok.wypelniona { border-color: var(--teal-mid); background: var(--teal-light); }
+    .rozmowa-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    .rozmowa-num { width: 34px; height: 34px; background: var(--teal); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+    .rozmowa-title { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--teal-dark); }
+
+    /* KONTAKT TYPE */
+    .kontakt-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 8px; display: block; }
+    .kontakt-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .kontakt-btn {
+      border: 2px solid var(--border); border-radius: 6px; padding: 5px 14px;
+      font-size: 12px; font-weight: 600; cursor: pointer; background: #fff;
+      color: var(--muted); transition: all 0.15s; font-family: inherit;
+    }
+    .kontakt-btn:hover { border-color: var(--teal-mid); color: var(--teal); background: var(--teal-light); }
+    .kontakt-btn.aktywny { border-color: var(--teal); background: var(--teal); color: #fff; }
+
+    /* FIELDS */
+    .field-group { margin-bottom: 14px; }
+    .field-group:last-child { margin-bottom: 0; }
+    .field-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--teal); margin-bottom: 6px; display: block; }
+    .field-group input[type="text"] {
+      width: 100%; border: none; border-bottom: 2px solid var(--teal);
+      outline: none; font-size: 14px; padding: 5px 4px;
+      background: transparent; font-family: inherit; color: var(--text);
+    }
+    .field-group textarea {
+      width: 100%; border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; font-size: 14px; font-family: inherit; color: var(--text);
+      resize: vertical; outline: none; line-height: 1.6; min-height: 68px;
+      background: #fff;
+    }
+    .field-group textarea:focus,
+    .rozmowa-blok.wypelniona .field-group textarea:focus { border-color: var(--teal); }
+    .rozmowa-blok.wypelniona .field-group textarea { background: #fff; }
+
+    /* PODSUMOWANIE */
+    .summary-block { background: var(--teal-light); border-radius: 10px; padding: 28px 32px; margin-top: 8px; margin-bottom: 32px; }
+    .summary-block h3 { font-size: 15px; font-weight: 700; color: var(--teal-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .summary-q { font-size: 14.5px; color: var(--teal-dark); font-weight: 600; margin-bottom: 14px; line-height: 1.6; }
+    .summary-block textarea {
+      width: 100%; border: 1px solid var(--teal-mid); border-radius: 8px;
+      padding: 12px 14px; font-size: 14px; font-family: inherit; color: var(--text);
+      resize: vertical; outline: none; line-height: 1.6; min-height: 90px; background: #fff;
+    }
+    .summary-block textarea:focus { border-color: var(--teal); }
+
+    /* POBIERZ */
+    .pobierz-section { margin-top: 20px; padding: 20px 24px; background: var(--teal-light); border-radius: 10px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .btn-pobierz { display: flex; align-items: center; gap: 10px; background: var(--teal); color: #fff; border: none; font-size: 14px; font-weight: 700; font-family: inherit; padding: 11px 24px; border-radius: 7px; cursor: pointer; transition: background 0.15s; }
+    .btn-pobierz:hover { background: var(--teal-dark); }
+    .pobierz-info { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* ODDANIE */
+    .oddanie { background: var(--teal); color: #fff; border-radius: 10px; padding: 24px 28px; margin-top: 8px; }
+    .oddanie h2 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+    .oddanie p { font-size: 13.5px; line-height: 1.65; color: rgba(255,255,255,0.85); margin-bottom: 8px; }
+    .oddanie p strong { color: #fff; }
+
+    /* AUTOSAVE */
+    .autosave-bar { position: fixed; top: 0; left: 0; right: 0; background: var(--teal-dark); color: #fff; font-size: 12px; font-family: 'Segoe UI', Arial, sans-serif; padding: 6px 20px; display: flex; align-items: center; gap: 10px; z-index: 999; }
+    .autosave-bar .as-status { font-weight: 600; opacity: 1; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+    @media (max-width: 600px) {
+      .container { padding: 28px 20px; }
+      body { padding-top: 62px; }
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .container { box-shadow: none; padding: 20px; }
+      .pobierz-section, .autosave-bar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="autosave-bar">
+  <span>&#128190;</span>
+  <span>Postęp zapisuje się automatycznie w tej przeglądarce.</span>
+  <span class="as-status" id="as-status">Możesz zamknąć i wrócić później.</span>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Rozmowy wg Metody KARE</h1>
+    <div class="subtitle">Zadanie W5 &nbsp;|&nbsp; Akademia Managera &nbsp;|&nbsp; prowadząca: Ania Orawska-Nowak</div>
+    <div class="deadline">Happyline: 11.05.2026 (poniedziałek), godz. 23:59</div>
+  </div>
+
+  <!-- DANE UCZESTNIKA -->
+  <div class="dane-row">
+    <div>
+      <label class="dane-label" for="uczestnik-imie">Imię i nazwisko</label>
+      <input type="text" id="uczestnik-imie" placeholder="np. Anna Kowalska" oninput="zapiszStan()">
+    </div>
+    <div>
+      <label class="dane-label" for="uczestnik-email">Adres e-mail</label>
+      <input type="email" id="uczestnik-email" placeholder="np. anna@gabinet.pl" oninput="zapiszStan()">
+    </div>
+  </div>
+
+  <!-- UWAGA TECHNICZNA -->
+  <div class="callout callout-warn">
+    <strong>Zanim zaczniesz — ważna informacja techniczna:</strong><br><br>
+    Ten formularz zapisuje Twój postęp automatycznie w przeglądarce, z której korzystasz.
+    Możesz go zamknąć i wrócić później — dane będą czekać.<br><br>
+    <strong>Przez cały czas wypełniania używaj tego samego komputera i tej samej przeglądarki.</strong>
+    Jeśli otworzysz plik na innym urządzeniu lub w innej przeglądarce, zaczniesz od pustego formularza.
+  </div>
+
+  <!-- KONTEKST -->
+  <div class="callout">
+    <strong>Instrukcja:</strong><br><br>
+    Przeprowadź <strong>10 rozmów z pacjentami</strong> świadomie stosując Metodę KARE.
+    Mogą to być wizyty, telefony lub wiadomości. Wypełniaj każdy blok <strong>bezpośrednio po zakończeniu rozmowy</strong> — nie z pamięci po kilku dniach.<br><br>
+    Na koniec napisz jedno zdanie podsumowujące: co najbardziej zmieniło się w Twoim podejściu do rozmowy z pacjentem.
+  </div>
+
+  <!-- CALLOUT MANAGER -->
+  <div class="callout callout-info" style="margin-bottom:28px;">
+    <strong>Manager bez bezpośredniego kontaktu z pacjentami:</strong><br>
+    Przeprowadź lub moderuj rozmowy w gabinecie stosując nowe standardy jako obserwator lub osoba wspierająca. Dokumentuj tak samo jak pozostali uczestnicy.
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar">
+    <span class="progress-label">Wypełniono:</span>
+    <span class="progress-count" id="progress-count">0 / 10 rozmów</span>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+
+  <!-- ROZMOWY — generowane przez JS -->
+  <div id="rozmowy-container"></div>
+
+  <!-- PODSUMOWANIE -->
+  <div class="summary-block">
+    <h3>Podsumowanie — 1 zdanie</h3>
+    <div class="summary-q">Co najbardziej zmieniło się w Twoim podejściu do rozmowy z pacjentem po tych 10 rozmowach?</div>
+    <textarea id="podsumowanie" placeholder="Napisz jedno zdanie — konkretna zmiana, nie ogólna ocena. Nie: &quot;stałem/am się lepszy/a&quot;. Tak: &quot;zamiast od razu proponować termin, najpierw pytam o...&quot;" oninput="zapiszStan(); updateProgress();"></textarea>
+  </div>
+
+  <!-- POBIERZ -->
+  <div class="pobierz-section">
+    <button class="btn-pobierz" onclick="pobierzFormularz()">&#8659; Pobierz wypełniony formularz</button>
+    <div class="pobierz-info">
+      Kliknij, gdy skończysz wypełniać.<br>
+      Pobierzesz gotowy plik do wysłania.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- JAK ODDAĆ -->
+  <div class="oddanie">
+    <h2>Jak oddać zadanie</h2>
+    <p>Pobierz wypełniony formularz przyciskiem powyżej, a następnie prześlij go przez formularz, do którego link znajdziesz w opisie tego zadania na platformie WebToLearn, pod nagraniem z LIVE W5 „Sprzedaż jako element kompleksowej opieki nad pacjentem".</p>
+    <p style="margin-top:14px"><strong>Kryterium zaliczenia:</strong> wypełniona tabela (10 rozmów przeprowadzonych po LIVE) + zdanie podsumowujące. Tabela wypełniona ogólnikami nie wystarczy — każda rozmowa = konkretna sytuacja i konkretna obserwacja. Zaliczone albo niezaliczone.</p>
+    <p style="margin-top:10px"><strong>Feedback od Ani</strong> otrzymasz do czwartku 14.05.2026, godz. 23:59.</p>
+  </div>
+
+</div>
+
+<script>
+  const LS_KEY = 'w5_care';
+
+  const TYPY_KONTAKTU = [
+    { value: 'wizyta',    label: 'wizyta'    },
+    { value: 'telefon',   label: 'telefon'   },
+    { value: 'wiadomosc', label: 'wiadomość' },
+    { value: 'inne',      label: 'inne'      }
+  ];
+
+  // ── GENEROWANIE BLOKÓW ───────────────────────────────────────────────────
+
+  function generateBlocks() {
+    const container = document.getElementById('rozmowy-container');
+    for (let i = 1; i <= 10; i++) {
+      const div = document.createElement('div');
+      div.className = 'rozmowa-blok';
+      div.id = 'blok-' + i;
+
+      const kontaktBtns = TYPY_KONTAKTU.map(t =>
+        `<button type="button" class="kontakt-btn" data-value="${t.value}" data-n="${i}" onclick="selectKontakt(${i},'${t.value}')">${t.label}</button>`
+      ).join('');
+
+      div.innerHTML = `
+        <div class="rozmowa-header">
+          <div class="rozmowa-num">${i}</div>
+          <div class="rozmowa-title">Rozmowa ${i}</div>
+        </div>
+
+        <div class="field-group">
+          <span class="kontakt-label">Rodzaj kontaktu</span>
+          <div class="kontakt-row" id="kontakt-row-${i}">${kontaktBtns}</div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="care-${i}">Który element KARE zastosowałem/am?</label>
+          <input type="text" id="care-${i}" placeholder="np. aktywne słuchanie, pytanie o cel wizyty, propozycja kontynuacji..." oninput="zapiszStan(); updateProgress()">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="ok-${i}">Co zadziałało?</label>
+          <textarea id="ok-${i}" placeholder="Co konkretnie zadziałało w tej rozmowie? Co poszło dobrze?" oninput="zapiszStan(); updateProgress()"></textarea>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="trudne-${i}">Co było trudne / nie wyszło?</label>
+          <textarea id="trudne-${i}" placeholder="Co sprawiło trudność lub nie wyszło tak jak planowałeś/aś?" oninput="zapiszStan(); updateProgress()"></textarea>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="nastepna-${i}">Co zrobię inaczej w następnej rozmowie?</label>
+          <textarea id="nastepna-${i}" placeholder="Jeden konkretny wniosek — co zmienisz w kolejnej rozmowie." oninput="zapiszStan(); updateProgress()"></textarea>
+        </div>
+      `;
+      container.appendChild(div);
+    }
+  }
+
+  function selectKontakt(n, typ) {
+    const row = document.getElementById('kontakt-row-' + n);
+    if (!row) return;
+    row.querySelectorAll('.kontakt-btn').forEach(btn => {
+      btn.classList.toggle('aktywny', btn.dataset.value === typ);
+    });
+    zapiszStan();
+    updateProgress();
+  }
+
+  // ── PROGRESS ─────────────────────────────────────────────────────────────
+
+  function updateProgress() {
+    let count = 0;
+    for (let i = 1; i <= 10; i++) {
+      const care   = document.getElementById('care-' + i);
+      const ok     = document.getElementById('ok-' + i);
+      const filled = care && ok && care.value.trim() !== '' && ok.value.trim() !== '';
+      const blok = document.getElementById('blok-' + i);
+      if (blok) blok.classList.toggle('wypelniona', !!filled);
+      if (filled) count++;
+    }
+    const countEl = document.getElementById('progress-count');
+    const fillEl  = document.getElementById('progress-fill');
+    if (countEl) countEl.textContent = count + ' / 10 rozmów';
+    if (fillEl)  fillEl.style.width  = (count / 10 * 100) + '%';
+  }
+
+  // ── AUTOSAVE ──────────────────────────────────────────────────────────────
+
+  function zapiszStan() {
+    const stan = {
+      imie:         (document.getElementById('uczestnik-imie')  || {}).value || '',
+      email:        (document.getElementById('uczestnik-email') || {}).value || '',
+      podsumowanie: (document.getElementById('podsumowanie')    || {}).value || ''
+    };
+    for (let i = 1; i <= 10; i++) {
+      const row     = document.getElementById('kontakt-row-' + i);
+      const aktywny = row ? row.querySelector('.kontakt-btn.aktywny') : null;
+      stan['kontakt_'  + i] = aktywny ? aktywny.dataset.value : '';
+      stan['care_'     + i] = (document.getElementById('care-'     + i) || {}).value || '';
+      stan['ok_'       + i] = (document.getElementById('ok-'       + i) || {}).value || '';
+      stan['trudne_'   + i] = (document.getElementById('trudne-'   + i) || {}).value || '';
+      stan['nastepna_' + i] = (document.getElementById('nastepna-' + i) || {}).value || '';
+    }
+    localStorage.setItem(LS_KEY, JSON.stringify(stan));
+    const st = document.getElementById('as-status');
+    if (st) {
+      const t = new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+      st.textContent = 'Ostatni zapis: ' + t;
+    }
+  }
+
+  function wczytajStan() {
+    if (document.body.getAttribute('data-downloaded') === 'true') return;
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    try {
+      const s = JSON.parse(raw);
+      const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
+      set('uczestnik-imie', s.imie);
+      set('uczestnik-email', s.email);
+      set('podsumowanie', s.podsumowanie);
+      for (let i = 1; i <= 10; i++) {
+        if (s['kontakt_' + i]) selectKontakt(i, s['kontakt_' + i]);
+        set('care-'     + i, s['care_'     + i]);
+        set('ok-'       + i, s['ok_'       + i]);
+        set('trudne-'   + i, s['trudne_'   + i]);
+        set('nastepna-' + i, s['nastepna_' + i]);
+      }
+    } catch(e) {}
+  }
+
+  document.addEventListener('input', zapiszStan);
+  setInterval(zapiszStan, 10000);
+
+  // ── POBIERZ ───────────────────────────────────────────────────────────────
+
+  function pobierzFormularz() {
+    zapiszStan();
+    const klon = document.documentElement.cloneNode(true);
+
+    // Textarea — zawartość jako innerHTML z escape'owaniem
+    const tOryg = document.querySelectorAll('textarea');
+    const tKlon = klon.querySelectorAll('textarea');
+    tOryg.forEach((el, i) => {
+      if (!tKlon[i]) return;
+      tKlon[i].innerHTML = el.value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    });
+
+    // Input text / email — wartość jako atrybut
+    const inpOryg = document.querySelectorAll('input[type="text"], input[type="email"]');
+    const inpKlon = klon.querySelectorAll('input[type="text"], input[type="email"]');
+    inpOryg.forEach((el, i) => {
+      if (inpKlon[i]) inpKlon[i].setAttribute('value', el.value);
+    });
+
+    // Kontakt buttons — stan aktywny (cloneNode kopiuje klasy, ale dla pewności przepiszmy wprost)
+    document.querySelectorAll('.kontakt-btn.aktywny').forEach(btn => {
+      const n   = btn.dataset.n;
+      const val = btn.dataset.value;
+      if (!n || !val) return;
+      const klonBtn = klon.querySelector(`#kontakt-row-${n} [data-value="${val}"]`);
+      if (klonBtn) klonBtn.classList.add('aktywny');
+    });
+
+    // Wypełnione bloki
+    document.querySelectorAll('.rozmowa-blok.wypelniona').forEach(blok => {
+      const klonBlok = klon.querySelector('#' + blok.id);
+      if (klonBlok) klonBlok.classList.add('wypelniona');
+    });
+
+    // Progress
+    const fillEl  = document.getElementById('progress-fill');
+    const countEl = document.getElementById('progress-count');
+    const fillKlon  = klon.querySelector('#progress-fill');
+    const countKlon = klon.querySelector('#progress-count');
+    if (fillEl  && fillKlon)  fillKlon.style.width     = fillEl.style.width;
+    if (countEl && countKlon) countKlon.textContent     = countEl.textContent;
+
+    klon.querySelectorAll('.pobierz-section').forEach(el => el.remove());
+    klon.querySelector('body').setAttribute('data-downloaded', 'true');
+
+    const html = '<!DOCTYPE html>\n' + klon.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      alert('Twój formularz otworzył się w nowej karcie.\n\nJak go zapisać na iPhone:\n1. Naciśnij ikonę udostępniania (prostokąt ze strzałką ↑)\n2. Wybierz „Zapisz na urządzeniu" lub „Pliki"\n3. Gotowe — wyślij przez formularz na WebToLearn.');
+      return;
+    }
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'W5_kare_wypelniony.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ── INIT ──────────────────────────────────────────────────────────────────
+
+  document.addEventListener('DOMContentLoaded', function() {
+    generateBlocks();
+    wczytajStan();
+    updateProgress();
+  });
+</script>
+
+</body>
+</html>
