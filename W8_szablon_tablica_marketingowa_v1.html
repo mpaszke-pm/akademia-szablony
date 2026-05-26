@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>W8 — Wizualna Tablica Strategii Marketingowej</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:       #1d4d3f;
+      --teal-dark:  #163a2f;
+      --teal-light: #eef2ee;
+      --teal-mid:   #c2d4ce;
+      --text:       #1a1a1a;
+      --muted:      #555;
+      --border:     #d4ddd8;
+      --bg:         #f5f2eb;
+      --red:        #c0392b;
+      --red-light:  #fdf0ee;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 40px 20px;
+      padding-top: 72px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 14px;
+      padding: 48px 52px;
+      box-shadow: 0 2px 20px rgba(29,77,63,0.10);
+    }
+
+    /* HEADER */
+    .header { border-bottom: 3px solid var(--teal); padding-bottom: 20px; margin-bottom: 28px; }
+    .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: var(--teal-dark); }
+    .header .subtitle { font-size: 14px; color: var(--muted); margin-top: 6px; }
+    .deadline { display: inline-block; margin-top: 12px; background: var(--teal); color: #fff; font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 4px; letter-spacing: 0.3px; }
+
+    /* CALLOUTS */
+    .callout { background: var(--teal-light); border-left: 4px solid var(--teal); padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 20px; font-size: 14px; color: var(--muted); line-height: 1.65; }
+    .callout-warn { background: #fdf6e3; border-left-color: #b8860b; color: #4a3a10; }
+    .callout-danger { background: #fff3cd; border-left: 4px solid #e67e00; color: #7a4000; padding: 14px 20px; border-radius: 0 8px 8px 0; margin-bottom: 20px; font-size: 14px; line-height: 1.65; }
+
+    /* PROGRESS */
+    .progress-bar { display: flex; align-items: center; gap: 16px; background: var(--teal-light); border-radius: 8px; padding: 12px 18px; margin-bottom: 28px; flex-wrap: wrap; }
+    .progress-label { font-size: 13px; color: var(--muted); white-space: nowrap; }
+    .progress-count { font-size: 15px; font-weight: 700; color: var(--teal-dark); white-space: nowrap; }
+    .progress-track { flex: 1; min-width: 120px; height: 8px; background: var(--teal-mid); border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--teal); border-radius: 4px; transition: width 0.3s; width: 0%; }
+
+    /* BLOKI */
+    .prompt-blok {
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 24px 28px; margin-bottom: 20px; background: #fff;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .prompt-blok.wypelniona { border-color: var(--teal-mid); background: var(--teal-light); }
+    .prompt-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .prompt-num { width: 36px; height: 36px; background: var(--teal); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; }
+    .prompt-title { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--teal-dark); }
+
+    /* SEKCJA SEPARATOR */
+    .sekcja-label {
+      font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--teal); margin: 20px 0 14px; padding-bottom: 6px;
+      border-bottom: 1px solid var(--teal-mid);
+    }
+
+    /* PROMPT DISPLAY */
+    .prompt-display {
+      background: #f8f9fa; border: 1px solid var(--border); border-radius: 8px;
+      padding: 16px 20px; font-size: 13px; font-family: 'Consolas', 'Courier New', monospace;
+      white-space: pre-wrap; line-height: 1.65; color: #333;
+      max-height: 260px; overflow-y: auto; margin-bottom: 12px;
+    }
+    .btn-copy {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: var(--teal); border: 1.5px solid var(--teal-mid);
+      font-size: 13px; font-weight: 600; font-family: inherit;
+      padding: 7px 16px; border-radius: 6px; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s; margin-bottom: 14px;
+    }
+    .btn-copy:hover { background: var(--teal-light); border-color: var(--teal); }
+
+    /* UPLOAD ZONE */
+    .upload-zone {
+      border: 2px dashed var(--teal-mid);
+      border-radius: 10px;
+      padding: 36px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      background: var(--teal-light);
+      margin-bottom: 12px;
+      user-select: none;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--teal);
+      background: #daeee5;
+    }
+    .upload-icon { font-size: 38px; margin-bottom: 10px; }
+    .upload-text { font-size: 15px; font-weight: 600; color: var(--teal-dark); margin-bottom: 4px; }
+    .upload-hint { font-size: 13px; color: var(--muted); }
+
+    .file-status {
+      display: none; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--teal-dark); font-weight: 600;
+      padding: 10px 14px; background: var(--teal-light);
+      border: 1px solid var(--teal-mid); border-radius: 8px;
+      margin-bottom: 14px;
+    }
+    .file-status.visible { display: flex; }
+    .file-status.error { background: var(--red-light); color: var(--red); border-color: #f1a9a0; }
+
+    .iframe-wrapper {
+      display: none;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 16px;
+    }
+    .iframe-wrapper.visible { display: block; }
+    .iframe-toolbar {
+      background: var(--teal-light);
+      padding: 9px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--teal-dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--teal-mid);
+    }
+    .btn-change {
+      background: #fff; border: 1px solid var(--teal-mid); border-radius: 5px;
+      font-size: 12px; color: var(--teal); cursor: pointer; padding: 4px 12px;
+      font-family: inherit; font-weight: 600;
+    }
+    .btn-change:hover { background: var(--teal-light); }
+    #tablica-iframe { width: 100%; border: none; display: block; min-height: 500px; }
+
+    /* FIELDS */
+    .field-group { margin-bottom: 28px; }
+    .field-group:last-child { margin-bottom: 0; }
+    .field-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--teal); margin-bottom: 6px; display: block; }
+    .field-group textarea {
+      width: 100%; border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; font-size: 14px; font-family: inherit; color: var(--text);
+      resize: vertical; outline: none; line-height: 1.6; min-height: 120px; background: #fff;
+    }
+    .field-group textarea:focus { border-color: var(--teal); }
+    .prompt-blok.wypelniona .field-group textarea { background: #fff; }
+
+    /* PODSUMOWANIE */
+    .summary-block { background: var(--teal-light); border-radius: 10px; padding: 28px 32px; margin-top: 8px; margin-bottom: 28px; }
+    .summary-block h3 { font-size: 15px; font-weight: 700; color: var(--teal-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .summary-q { font-size: 14.5px; color: var(--teal-dark); font-weight: 600; margin-bottom: 14px; line-height: 1.6; }
+    .summary-block textarea {
+      width: 100%; border: 1px solid var(--teal-mid); border-radius: 8px;
+      padding: 12px 14px; font-size: 14px; font-family: inherit; color: var(--text);
+      resize: vertical; outline: none; line-height: 1.6; min-height: 90px; background: #fff;
+    }
+    .summary-block textarea:focus { border-color: var(--teal); }
+
+    /* DANE BOTTOM */
+    .dane-bottom-section {
+      background: var(--teal-light); border: 2px solid var(--teal-mid);
+      border-radius: 10px; padding: 24px 28px; margin-bottom: 20px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .dane-bottom-section.error { border-color: var(--red); background: var(--red-light); }
+    .dane-bottom-section h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--teal-dark); margin-bottom: 16px; }
+    .dane-row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .dane-row > div { flex: 1; min-width: 200px; }
+    .dane-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+    .dane-row input {
+      width: 100%; border: none; border-bottom: 2px solid var(--teal);
+      outline: none; font-size: 15px; padding: 6px 4px;
+      background: transparent; font-family: inherit; color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .dane-row input.invalid { border-bottom-color: var(--red) !important; }
+    .error-msg { display: none; color: var(--red); font-size: 13px; font-weight: 600; margin-top: 12px; }
+    .error-msg.visible { display: block; }
+    .unlock-hint { font-size: 12.5px; color: var(--muted); margin-top: 12px; display: flex; align-items: center; gap: 6px; }
+    .unlock-hint.unlocked { color: #1a6640; font-weight: 600; }
+
+    /* POBIERZ */
+    .pobierz-section { margin-top: 20px; padding: 20px 24px; background: var(--teal-light); border-radius: 10px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .btn-pobierz {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--teal); color: #fff; border: none;
+      font-size: 14px; font-weight: 700; font-family: inherit;
+      padding: 11px 24px; border-radius: 7px; cursor: pointer; transition: background 0.15s;
+    }
+    .btn-pobierz:hover:not(:disabled) { background: var(--teal-dark); }
+    .btn-pobierz:disabled { background: #b0bfba; color: #dde8e4; cursor: not-allowed; }
+    .pobierz-info { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* ODDANIE */
+    .oddanie { background: var(--teal); color: #fff; border-radius: 10px; padding: 24px 28px; margin-top: 8px; }
+    .oddanie h2 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+    .oddanie p { font-size: 13.5px; line-height: 1.65; color: rgba(255,255,255,0.85); margin-bottom: 8px; }
+    .oddanie p strong { color: #fff; }
+
+    /* AUTOSAVE */
+    .autosave-bar { position: fixed; top: 0; left: 0; right: 0; background: var(--teal-dark); color: #fff; font-size: 12px; font-family: 'Segoe UI', Arial, sans-serif; padding: 6px 20px; display: flex; align-items: center; gap: 10px; z-index: 999; }
+    .autosave-bar .as-status { font-weight: 600; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+    @media (max-width: 600px) {
+      .container { padding: 28px 20px; }
+      body { padding-top: 62px; }
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .container { box-shadow: none; padding: 20px; }
+      .pobierz-section, .autosave-bar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="autosave-bar">
+  <span>&#128190;</span>
+  <span>Postęp zapisuje się automatycznie w tej przeglądarce.</span>
+  <span class="as-status" id="as-status">Możesz zamknąć i wrócić później.</span>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Wizualna Tablica Strategii Marketingowej</h1>
+    <div class="subtitle">Zadanie W8 &nbsp;|&nbsp; Akademia Managera &nbsp;|&nbsp; prowadząca: Beata Fąfara</div>
+    <div class="deadline">Deadline: 01.06.2026 (poniedziałek), godz. 23:59</div>
+  </div>
+
+  <!-- UWAGA TECHNICZNA -->
+  <div class="callout callout-warn">
+    <strong>Zanim zaczniesz — ważna informacja techniczna:</strong><br><br>
+    Ten formularz zapisuje Twoje odpowiedzi automatycznie w przeglądarce, z której korzystasz.
+    Możesz go zamknąć i wrócić — teksty będą czekać.<br><br>
+    <strong>Przez cały czas używaj tego samego komputera i tej samej przeglądarki.</strong>
+    Na innym urządzeniu lub w innej przeglądarce zaczniesz od zera.
+  </div>
+
+  <div class="callout-danger">
+    ⚠️ <strong>Uwaga:</strong> plik HTML tablicy <strong>nie jest zapisywany</strong> między sesjami — jeśli zamkniesz formularz przed pobraniem, będziesz musiał/a wgrać go ponownie. Najlepiej dokończ w jednym podejściu.
+  </div>
+
+  <!-- INSTRUKCJA -->
+  <div class="callout">
+    <strong>Instrukcja:</strong><br><br>
+    <ol style="margin-left:18px; line-height:2;">
+      <li>Skopiuj prompt z sekcji poniżej i wklej do swojego Asystenta AI Gabinetu.</li>
+      <li>Zapisz wygenerowany kod jako plik <code>.html</code> na swoim komputerze (jeśli nie wiesz, jak to zrobić, zapytaj dowolny model AI).</li>
+      <li>Wgraj ten plik w Kroku 1 poniżej — pojawi się podgląd tablicy.</li>
+      <li>Wypełnij trzy pytania w Kroku 2.</li>
+      <li>Wpisz imię i nazwisko, a następnie pobierz gotowy plik przyciskiem na dole.</li>
+      <li>Prześlij pobrany plik przez formularz podany w sekcji „Jak oddać zadanie".</li>
+    </ol>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar">
+    <span class="progress-label">Wypełniono:</span>
+    <span class="progress-count" id="progress-count">0 / 4 kroki</span>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+
+  <!-- PROMPT -->
+  <div class="prompt-blok">
+    <div class="prompt-header">
+      <div class="prompt-num" style="background:var(--teal-mid); color:var(--teal-dark);">&#128203;</div>
+      <div class="prompt-title">Prompt do asystenta</div>
+    </div>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:14px; line-height:1.65;">
+      Upewnij się, że masz w projekcie asystenta plik <strong>STRATEGIA_MARKETINGOWA.md</strong> z LIVE W8.
+      Skopiuj prompt, wklej do asystenta i zapisz wygenerowany kod jako plik <code>.html</code>.
+    </p>
+    <div class="prompt-display" id="prompt-text">Na podstawie mojej strategii marketingowej stwórz wizualną tablicę strategii w HTML.
+
+Korzystaj z plików:
+- STRATEGIA_MARKETINGOWA.md
+- DNA_GABINETU
+- AVATAR_PACJENTA
+- PERSONA_CMO
+
+Nie wymyślaj danych. Jeśli czegoś nie ma w plikach, oznacz to jako "do uzupełnienia".
+
+Tablica ma być czytelna i praktyczna. Ma pokazywać:
+
+1. Dane bazowe gabinetu:
+- nazwa gabinetu,
+- lokalizacja,
+- najważniejszy cel biznesowy,
+- najważniejszy cel marketingowy.
+
+2. Diagnozę:
+- co już działa,
+- co nie działa,
+- co jest problemem marketingowym,
+- co jest problemem operacyjnym lub sprzedażowym udającym marketing.
+
+3. Priorytety na najbliższe 30 dni:
+- maksymalnie 3 priorytety,
+- dlaczego są ważne,
+- kto powinien za nie odpowiadać,
+- jak mierzymy efekt.
+
+4. Kanały marketingowe:
+- kanał,
+- cel kanału: marka / edukacja / widoczność / leady / sprzedaż / retencja,
+- czy skalować teraz: tak / nie / warunkowo,
+- dlaczego.
+
+5. Decyzje:
+- co robimy,
+- czego nie robimy,
+- co mierzymy,
+- co wymaga zgody właściciela lub dodatkowych danych.
+
+Wygeneruj kompletny plik HTML z CSS w jednym pliku.
+Nie używaj zewnętrznych bibliotek.
+Nie twórz strony sprzedażowej. To ma być robocza tablica strategiczna dla managera gabinetu.</div>
+    <button class="btn-copy" id="btn-copy" onclick="skopiujPrompt()">&#128203; Skopiuj prompt</button>
+    <div style="font-size:13px; color:var(--muted); line-height:1.6;">
+      Jeśli nie masz dostępu do własnych danych gabinetu — skorzystaj z danych fikcyjnego gabinetu FizjoBalance (materiały na WebToLearn).
+    </div>
+  </div>
+
+  <!-- KROK 1: WGRAJ TABLICĘ -->
+  <div class="prompt-blok" id="blok-tablica">
+    <div class="prompt-header">
+      <div class="prompt-num">1</div>
+      <div class="prompt-title">Krok 1 — Twoja tablica strategii</div>
+    </div>
+
+    <p style="font-size:14px; color:var(--muted); margin-bottom:18px; line-height:1.65;">
+      Wgraj plik HTML z wizualną tablicą strategii wygenerowaną przez asystenta AI.
+      Po wgraniu pojawi się podgląd tablicy.
+    </p>
+
+    <div class="file-status" id="file-status"></div>
+
+    <div class="upload-zone" id="upload-zone"
+         onclick="document.getElementById('file-input').click()"
+         ondragover="handleDragOver(event)"
+         ondragleave="handleDragLeave(event)"
+         ondrop="handleDrop(event)">
+      <div class="upload-icon">&#128194;</div>
+      <div class="upload-text">Kliknij, żeby wybrać plik HTML</div>
+      <div class="upload-hint">lub przeciągnij i upuść tutaj &nbsp;·&nbsp; akceptuję pliki .html</div>
+    </div>
+    <input type="file" id="file-input" accept=".html,.htm" style="display:none" onchange="handleFileSelect(event)">
+
+    <div class="iframe-wrapper" id="iframe-wrapper">
+      <div class="iframe-toolbar">
+        <span>&#128270; Podgląd tablicy</span>
+        <button class="btn-change" onclick="document.getElementById('file-input').click()">&#128196; Zmień plik</button>
+      </div>
+      <iframe id="tablica-iframe" title="Podgląd tablicy strategii"></iframe>
+    </div>
+  </div>
+
+  <!-- KROK 2: ODPOWIEDZI -->
+  <div class="prompt-blok" id="blok-pytania">
+    <div class="prompt-header">
+      <div class="prompt-num">2</div>
+      <div class="prompt-title">Krok 2 — Twoje odpowiedzi</div>
+    </div>
+
+    <p style="font-size:14px; color:var(--muted); margin-bottom:24px; line-height:1.65;">
+      Odpowiedz na trzy pytania na podstawie wygenerowanej tablicy. Pisz konkretnie — nie przepisuj tego, co wygenerowała AI.
+    </p>
+
+    <div class="field-group">
+      <label class="field-label" for="priorytet">1. Jaki jest najważniejszy priorytet marketingowy na najbliższe 30 dni?</label>
+      <textarea id="priorytet"
+        placeholder="Napisz konkretnie: co jest najważniejsze i dlaczego właśnie to, a nie coś innego."
+        oninput="zapiszStan(); updateProgress()"></textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="nie-robie">2. Czego na razie nie robisz i dlaczego?</label>
+      <textarea id="nie-robie"
+        placeholder="Co zostało oznaczone jako &quot;nie robimy teraz&quot;? Dlaczego — brak zasobów, nie ten czas, nie ten cel?"
+        oninput="zapiszStan(); updateProgress()"></textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="zmiana">3. Jaką jedną konkretną zmianę wdrażasz?</label>
+      <textarea id="zmiana"
+        placeholder="To ma być zobowiązanie — nie lista. Napisz:&#10;— Co dokładnie robisz (jedna akcja)?&#10;— Do kiedy (konkretna data)?&#10;— Po czym poznasz że działa (jeden miernik lub obserwacja)?"
+        oninput="zapiszStan(); updateProgress()"></textarea>
+    </div>
+  </div>
+
+  <!-- REFLEKSJA -->
+  <div class="summary-block">
+    <h3>Refleksja (opcjonalnie)</h3>
+    <div class="summary-q">Co Cię zaskoczyło w pracy z asystentem przy tworzeniu tablicy?</div>
+    <textarea id="podsumowanie"
+      placeholder="Napisz szczerze: co Cię zdziwiło, co zawiodło, co chcesz robić inaczej."
+      oninput="zapiszStan()"></textarea>
+  </div>
+
+  <!-- DANE UCZESTNIKA -->
+  <div class="dane-bottom-section" id="dane-bottom-section">
+    <h3>&#128221; Twoje dane — wymagane do pobrania formularza</h3>
+    <div class="dane-row">
+      <div>
+        <label class="dane-label" for="uczestnik-imie">Imię i nazwisko *</label>
+        <input type="text" id="uczestnik-imie" placeholder="np. Anna Kowalska"
+          oninput="zapiszStan(); clearDaneError(); updatePobierzBtn()">
+      </div>
+      <div>
+        <label class="dane-label" for="uczestnik-email">Adres e-mail *</label>
+        <input type="email" id="uczestnik-email" placeholder="np. anna@gabinet.pl"
+          oninput="zapiszStan(); clearDaneError()">
+      </div>
+    </div>
+    <div class="error-msg" id="dane-error">&#9888; Uzupełnij imię i nazwisko oraz adres e-mail przed pobraniem.</div>
+    <div class="unlock-hint" id="unlock-hint">&#128274; Wgraj tablicę i wpisz imię i nazwisko (min. 2 słowa), aby odblokować pobieranie.</div>
+  </div>
+
+  <!-- POBIERZ -->
+  <div class="pobierz-section">
+    <button class="btn-pobierz" id="btn-pobierz" onclick="pobierzFormularz()" disabled>
+      &#8659; Pobierz wypełniony formularz
+    </button>
+    <div class="pobierz-info">
+      Pobierzesz jeden plik HTML z tablicą i Twoimi odpowiedziami.<br>
+      Odblokuje się po wgraniu tablicy i wpisaniu imienia i nazwiska.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- JAK ODDAC -->
+  <div class="oddanie">
+    <h2>Jak oddać zadanie</h2>
+    <p>Prześlij <strong>TEN plik</strong> (zawierający tablicę HTML i Twoje odpowiedzi na pytania) przez formularz:</p>
+    <p style="margin-top:10px; font-size:15px; font-weight:700;">
+      <a href="https://forms.gle/9A4LHQjuEzYt2YgL8" target="_blank" rel="noopener"
+         style="color:#fff; text-decoration:underline;">
+        &#128279; https://forms.gle/9A4LHQjuEzYt2YgL8
+      </a>
+    </p>
+    <p style="margin-top:14px"><strong>Kryterium zaliczenia:</strong> tablica powstała na podstawie STRATEGIA_MARKETINGOWA.md, zawiera konkretne cele i decyzje, oddziela problemy marketingowe od operacyjnych, pokazuje czego na razie nie robisz, zawiera jedną konkretną zmianę z datą i miernikiem sukcesu. + odpowiedzi na 3 pytania w formularzu.</p>
+    <p style="margin-top:10px"><strong>Feedback od Beaty</strong> otrzymasz do czwartku <strong>04.06.2026</strong>, godz. 23:59.</p>
+  </div>
+
+</div>
+
+<script>
+  const LS_KEY = 'w8_form_v1';
+  let embeddedHtml = '';
+  let currentBlobUrl = '';
+  const PROMPT_TEXT = document.getElementById('prompt-text') ? document.getElementById('prompt-text').textContent : '';
+
+  function skopiujPrompt() {
+    navigator.clipboard.writeText(PROMPT_TEXT.trim())
+      .then(() => {
+        const btn = document.getElementById('btn-copy');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '&#10003; Skopiowano!';
+        btn.style.color = '#1a6640';
+        setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
+      })
+      .catch(() => alert('Nie udało się skopiować automatycznie.\nZaznacz tekst w szarym polu i skopiuj ręcznie (Ctrl+C / Cmd+C).'));
+  }
+
+  // ── OBSŁUGA PLIKU ─────────────────────────────────────────────────────────
+
+  function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (file) processFile(file);
+    e.target.value = '';
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('upload-zone').classList.add('drag-over');
+  }
+
+  function handleDragLeave() {
+    document.getElementById('upload-zone').classList.remove('drag-over');
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('upload-zone').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
+  }
+
+  function processFile(file) {
+    if (!file.name.match(/\.(html|htm)$/i)) {
+      showFileStatus('&#9888; Nieprawidłowy format — wybierz plik .html lub .htm', true);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      embeddedHtml = e.target.result;
+      showFileStatus('&#10003; Wgrano: ' + file.name + ' (' + Math.round(file.size / 1024) + ' KB)', false);
+      displayIframe(embeddedHtml);
+      updateProgress();
+      zapiszStan();
+      updatePobierzBtn();
+    };
+    reader.onerror = function() {
+      showFileStatus('&#9888; Błąd odczytu pliku — spróbuj ponownie.', true);
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  function showFileStatus(msg, isError) {
+    const el = document.getElementById('file-status');
+    el.innerHTML = msg;
+    el.className = 'file-status visible' + (isError ? ' error' : '');
+    document.getElementById('upload-zone').style.display = isError ? '' : 'none';
+  }
+
+  function displayIframe(html) {
+    if (currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    currentBlobUrl = URL.createObjectURL(blob);
+
+    const iframe = document.getElementById('tablica-iframe');
+    iframe.onload = function() {
+      try {
+        const h = iframe.contentWindow.document.body.scrollHeight;
+        iframe.style.height = Math.min(Math.max(h + 20, 400), 1400) + 'px';
+      } catch(e) {
+        iframe.style.height = '600px';
+      }
+    };
+    iframe.src = currentBlobUrl;
+
+    document.getElementById('iframe-wrapper').classList.add('visible');
+    document.getElementById('blok-tablica').classList.add('wypelniona');
+  }
+
+  // ── PROGRESS ─────────────────────────────────────────────────────────────
+
+  function updateProgress() {
+    let count = 0;
+    if (embeddedHtml)                                                        count++;
+    if ((document.getElementById('priorytet') || {}).value?.trim())         count++;
+    if ((document.getElementById('nie-robie') || {}).value?.trim())         count++;
+    if ((document.getElementById('zmiana')    || {}).value?.trim())         count++;
+
+    const countEl = document.getElementById('progress-count');
+    const fillEl  = document.getElementById('progress-fill');
+    if (countEl) countEl.textContent = count + ' / 4 kroki';
+    if (fillEl)  fillEl.style.width  = (count / 4 * 100) + '%';
+
+    const q1 = (document.getElementById('priorytet') || {}).value?.trim();
+    const q2 = (document.getElementById('nie-robie') || {}).value?.trim();
+    const q3 = (document.getElementById('zmiana')    || {}).value?.trim();
+    const blok = document.getElementById('blok-pytania');
+    if (blok) blok.classList.toggle('wypelniona', !!(q1 && q2 && q3));
+  }
+
+  // ── AUTOSAVE ──────────────────────────────────────────────────────────────
+
+  function zapiszStan() {
+    const stan = {
+      priorytet:    (document.getElementById('priorytet')       || {}).value || '',
+      nie_robie:    (document.getElementById('nie-robie')       || {}).value || '',
+      zmiana:       (document.getElementById('zmiana')          || {}).value || '',
+      podsumowanie: (document.getElementById('podsumowanie')    || {}).value || '',
+      imie:         (document.getElementById('uczestnik-imie')  || {}).value || '',
+      email:        (document.getElementById('uczestnik-email') || {}).value || ''
+    };
+    try { localStorage.setItem(LS_KEY, JSON.stringify(stan)); } catch(e) {}
+    const st = document.getElementById('as-status');
+    if (st) {
+      const t = new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+      st.textContent = 'Ostatni zapis: ' + t;
+    }
+  }
+
+  function wczytajStan() {
+    if (document.body.getAttribute('data-downloaded') === 'true') return;
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    try {
+      const s = JSON.parse(raw);
+      const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+      set('priorytet',       s.priorytet);
+      set('nie-robie',       s.nie_robie);
+      set('zmiana',          s.zmiana);
+      set('podsumowanie',    s.podsumowanie);
+      set('uczestnik-imie',  s.imie);
+      set('uczestnik-email', s.email);
+    } catch(e) {}
+  }
+
+  document.addEventListener('input', zapiszStan);
+  setInterval(zapiszStan, 10000);
+
+  // ── WALIDACJA I PRZYCISK ──────────────────────────────────────────────────
+
+  function clearDaneError() {
+    document.getElementById('dane-error').classList.remove('visible');
+    document.getElementById('dane-bottom-section').classList.remove('error');
+    document.getElementById('uczestnik-imie').classList.remove('invalid');
+    document.getElementById('uczestnik-email').classList.remove('invalid');
+  }
+
+  function updatePobierzBtn() {
+    const imieEl      = document.getElementById('uczestnik-imie');
+    const btn         = document.getElementById('btn-pobierz');
+    const hint        = document.getElementById('unlock-hint');
+    const imie        = imieEl ? imieEl.value.trim() : '';
+    const hasFullName = imie.split(/\s+/).filter(Boolean).length >= 2;
+    const hasFile     = embeddedHtml !== '';
+
+    btn.disabled = !(hasFullName && hasFile);
+
+    if (hasFullName && hasFile) {
+      hint.innerHTML = '&#128275; Formularz odblokowany &mdash; możesz pobrać.';
+      hint.classList.add('unlocked');
+    } else if (!hasFile && !hasFullName) {
+      hint.innerHTML = '&#128274; Wgraj tablicę HTML i wpisz imię i nazwisko (min. 2 słowa), aby odblokować pobieranie.';
+      hint.classList.remove('unlocked');
+    } else if (!hasFile) {
+      hint.innerHTML = '&#128274; Wgraj tablicę HTML, aby odblokować pobieranie.';
+      hint.classList.remove('unlocked');
+    } else {
+      hint.innerHTML = '&#128274; Wpisz imię i nazwisko (min. 2 słowa), aby odblokować pobieranie.';
+      hint.classList.remove('unlocked');
+    }
+  }
+
+  function walidujDane() {
+    const imieEl    = document.getElementById('uczestnik-imie');
+    const emailEl   = document.getElementById('uczestnik-email');
+    const errEl     = document.getElementById('dane-error');
+    const sectionEl = document.getElementById('dane-bottom-section');
+    const imie  = imieEl.value.trim();
+    const email = emailEl.value.trim();
+    let valid = true;
+
+    imieEl.classList.remove('invalid');
+    emailEl.classList.remove('invalid');
+    if (imie.split(/\s+/).filter(Boolean).length < 2) { imieEl.classList.add('invalid'); valid = false; }
+    if (!email || !email.includes('@'))               { emailEl.classList.add('invalid'); valid = false; }
+
+    if (!valid) {
+      errEl.classList.add('visible');
+      sectionEl.classList.add('error');
+      sectionEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      errEl.classList.remove('visible');
+      sectionEl.classList.remove('error');
+    }
+    return valid;
+  }
+
+  // ── POBIERZ ───────────────────────────────────────────────────────────────
+
+  function pobierzFormularz() {
+    if (!embeddedHtml) {
+      document.getElementById('blok-tablica').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      showFileStatus('&#9888; Wgraj najpierw plik HTML z tablicą strategii.', true);
+      return;
+    }
+    if (!walidujDane()) return;
+    zapiszStan();
+
+    const klon = document.documentElement.cloneNode(true);
+
+    // Textarea
+    const tOryg = document.querySelectorAll('textarea');
+    const tKlon = klon.querySelectorAll('textarea');
+    tOryg.forEach((el, i) => {
+      if (!tKlon[i]) return;
+      tKlon[i].innerHTML = el.value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    });
+
+    // Input text / email
+    const inpOryg = document.querySelectorAll('input[type="text"], input[type="email"]');
+    const inpKlon = klon.querySelectorAll('input[type="text"], input[type="email"]');
+    inpOryg.forEach((el, i) => {
+      if (inpKlon[i]) inpKlon[i].setAttribute('value', el.value);
+    });
+
+    // Iframe — zamień blob URL na srcdoc z osadzonym HTML
+    const iframeKlon = klon.querySelector('#tablica-iframe');
+    if (iframeKlon && embeddedHtml) {
+      iframeKlon.removeAttribute('src');
+      iframeKlon.setAttribute('srcdoc',
+        embeddedHtml.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+      );
+      const currentH = document.getElementById('tablica-iframe').style.height;
+      if (currentH) iframeKlon.style.height = currentH;
+    }
+
+    // Upload zone ukryj, iframe wrapper pokaż
+    const uzKlon = klon.querySelector('#upload-zone');
+    if (uzKlon) uzKlon.style.display = 'none';
+    const iwKlon = klon.querySelector('#iframe-wrapper');
+    if (iwKlon) iwKlon.classList.add('visible');
+
+    // Wypelnione bloki
+    document.querySelectorAll('.prompt-blok.wypelniona').forEach(blok => {
+      const kb = klon.querySelector('#' + blok.id);
+      if (kb) kb.classList.add('wypelniona');
+    });
+
+    // Progress
+    const fillEl   = document.getElementById('progress-fill');
+    const countEl  = document.getElementById('progress-count');
+    const fk = klon.querySelector('#progress-fill');
+    const ck = klon.querySelector('#progress-count');
+    if (fillEl && fk) fk.style.width = fillEl.style.width;
+    if (countEl && ck) ck.textContent = countEl.textContent;
+
+    // Ukryj interaktywne
+    klon.querySelectorAll('.pobierz-section').forEach(el => el.remove());
+    klon.querySelectorAll('.error-msg').forEach(el => { el.style.display = 'none'; });
+    klon.querySelector('body').setAttribute('data-downloaded', 'true');
+
+    // Nazwa pliku
+    const imie = document.getElementById('uczestnik-imie').value.trim();
+    const safeName = imie.replace(/[^a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]/g, '').replace(/\s+/g, '_') || 'uczestnik';
+
+    const html = '<!DOCTYPE html>\n' + klon.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      alert('Twój formularz otworzył się w nowej karcie.\n\nJak go zapisać na iPhone:\n1. Naciśnij ikonę udostępniania (prostokąt ze strzałką ↑)\n2. Wybierz „Zapisz na urządzeniu" lub „Pliki"\n3. Gotowe — wyślij przez formularz na WebToLearn.');
+      return;
+    }
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'W8_Marketing_' + safeName + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ── INIT ──────────────────────────────────────────────────────────────────
+
+  document.addEventListener('DOMContentLoaded', function() {
+    wczytajStan();
+    updateProgress();
+    updatePobierzBtn();
+  });
+</script>
+
+</body>
+</html>
