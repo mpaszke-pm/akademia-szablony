@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>W9 — Protokół Zlecenia Marketingu</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:       #1d4d3f;
+      --teal-dark:  #163a2f;
+      --teal-light: #eef2ee;
+      --teal-mid:   #c2d4ce;
+      --text:       #1a1a1a;
+      --muted:      #555;
+      --border:     #d4ddd8;
+      --bg:         #f5f2eb;
+      --red:        #c0392b;
+      --red-light:  #fdf0ee;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 40px 20px;
+      padding-top: 72px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 14px;
+      padding: 48px 52px;
+      box-shadow: 0 2px 20px rgba(29,77,63,0.10);
+    }
+
+    /* HEADER */
+    .header { border-bottom: 3px solid var(--teal); padding-bottom: 20px; margin-bottom: 28px; }
+    .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: var(--teal-dark); }
+    .header .subtitle { font-size: 14px; color: var(--muted); margin-top: 6px; }
+    .deadline { display: inline-block; margin-top: 12px; background: var(--teal); color: #fff; font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 4px; letter-spacing: 0.3px; }
+
+    /* CALLOUTS */
+    .callout { background: var(--teal-light); border-left: 4px solid var(--teal); padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 20px; font-size: 14px; color: var(--muted); line-height: 1.65; }
+    .callout-warn { background: #fdf6e3; border-left-color: #b8860b; color: #4a3a10; }
+    .callout-info { background: #e8f4fd; border-left-color: #1a6fa3; color: #0d4d72; }
+
+    /* PROGRESS */
+    .progress-bar { display: flex; align-items: center; gap: 16px; background: var(--teal-light); border-radius: 8px; padding: 12px 18px; margin-bottom: 24px; flex-wrap: wrap; }
+    .progress-label { font-size: 13px; color: var(--muted); white-space: nowrap; }
+    .progress-count { font-size: 15px; font-weight: 700; color: var(--teal-dark); white-space: nowrap; }
+    .progress-track { flex: 1; min-width: 120px; height: 8px; background: var(--teal-mid); border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--teal); border-radius: 4px; transition: width 0.3s; width: 0%; }
+
+    /* ROLA SELECTOR */
+    .rola-section { margin-bottom: 24px; }
+    .rola-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 10px; display: block; }
+    .rola-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .rola-btn {
+      border: 2px solid var(--border); border-radius: 8px; padding: 8px 22px;
+      font-size: 13px; font-weight: 700; cursor: pointer; background: #fff;
+      color: var(--muted); transition: all 0.15s; font-family: inherit;
+    }
+    .rola-btn:hover { border-color: var(--teal-mid); color: var(--teal); background: var(--teal-light); }
+    .rola-btn.aktywny { border-color: var(--teal); background: var(--teal); color: #fff; }
+
+    /* BLOKI PROTOKOŁU */
+    .protokol-blok {
+      border: 1px solid var(--border); border-radius: 10px;
+      margin-bottom: 20px; background: #fff; overflow: hidden;
+    }
+    .blok-header {
+      background: var(--teal); color: #fff;
+      padding: 13px 24px;
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .blok-body { padding: 24px 28px; }
+
+    /* ELEMENT WIERSZ */
+    .elem-row { display: flex; align-items: flex-start; gap: 0; margin-bottom: 22px; }
+    .elem-row:last-child { margin-bottom: 0; }
+    .elem-num {
+      width: 32px; height: 32px; background: var(--teal); color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; flex-shrink: 0; margin-right: 16px; margin-top: 2px;
+    }
+    .elem-content { flex: 1; }
+    .elem-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--teal-dark); margin-bottom: 4px; }
+    .elem-hint { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.55; }
+    .elem-content textarea {
+      width: 100%; border: 1px solid var(--border); border-radius: 8px;
+      padding: 9px 12px; font-size: 14px; font-family: inherit; color: var(--text);
+      resize: vertical; outline: none; line-height: 1.6; min-height: 76px; background: #fff;
+    }
+    .elem-content textarea:focus { border-color: var(--teal); }
+    .elem-content textarea.short { min-height: 48px; }
+
+    /* KANAŁ BUTTONS */
+    .kanal-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .kanal-btn {
+      border: 2px solid var(--border); border-radius: 6px; padding: 5px 12px;
+      font-size: 12px; font-weight: 600; cursor: pointer; background: #fff;
+      color: var(--muted); transition: all 0.15s; font-family: inherit;
+    }
+    .kanal-btn:hover { border-color: var(--teal-mid); color: var(--teal); background: var(--teal-light); }
+    .kanal-btn.aktywny { border-color: var(--teal); background: var(--teal); color: #fff; }
+
+    /* GRID 2 KOLUMNY */
+    .grid-2 { display: flex; gap: 20px; flex-wrap: wrap; }
+    .grid-2 > div { flex: 1; min-width: 180px; }
+    .col-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+    .grid-2 input[type="text"] {
+      width: 100%; border: none; border-bottom: 2px solid var(--teal);
+      outline: none; font-size: 14px; padding: 5px 4px;
+      background: transparent; font-family: inherit; color: var(--text);
+    }
+
+    /* SEPARATOR */
+    .blok-sep { border: none; border-top: 1px solid var(--teal-mid); margin: 20px 0; }
+
+    /* PYTANIA KONTROLNE */
+    .pytania-blok { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 20px; background: #fff; overflow: hidden; }
+    .pytania-blok.hidden { display: none; }
+    .pytanie-input {
+      width: 100%; border: none; border-bottom: 2px solid var(--teal-mid);
+      outline: none; font-size: 14px; padding: 6px 4px;
+      background: transparent; font-family: inherit; color: var(--text);
+      transition: border-color 0.2s; margin-bottom: 14px; display: block;
+    }
+    .pytanie-input:focus { border-bottom-color: var(--teal); }
+    .sprawdzanie-ta {
+      width: 100%; border: 1px solid var(--border); border-radius: 8px;
+      padding: 9px 12px; font-size: 14px; font-family: inherit; color: var(--text);
+      resize: vertical; outline: none; line-height: 1.6; min-height: 72px; background: #fff;
+    }
+    .sprawdzanie-ta:focus { border-color: var(--teal); }
+
+    /* PODSUMOWANIE */
+    .summary-block { background: var(--teal-light); border-radius: 10px; padding: 28px 32px; margin-top: 8px; margin-bottom: 28px; }
+    .summary-block h3 { font-size: 15px; font-weight: 700; color: var(--teal-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .summary-q { font-size: 14.5px; color: var(--teal-dark); font-weight: 600; margin-bottom: 14px; line-height: 1.6; }
+    .summary-block textarea {
+      width: 100%; border: 1px solid var(--teal-mid); border-radius: 8px;
+      padding: 12px 14px; font-size: 14px; font-family: inherit; color: var(--text);
+      resize: vertical; outline: none; line-height: 1.6; min-height: 90px; background: #fff;
+    }
+    .summary-block textarea:focus { border-color: var(--teal); }
+
+    /* DANE BOTTOM */
+    .dane-bottom-section {
+      background: var(--teal-light); border: 2px solid var(--teal-mid);
+      border-radius: 10px; padding: 24px 28px; margin-bottom: 20px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .dane-bottom-section.error { border-color: var(--red); background: var(--red-light); }
+    .dane-bottom-section h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--teal-dark); margin-bottom: 16px; }
+    .dane-bottom-row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .dane-bottom-row > div { flex: 1; min-width: 200px; }
+    .dane-bottom-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+    .dane-bottom-row input {
+      width: 100%; border: none; border-bottom: 2px solid var(--teal);
+      outline: none; font-size: 15px; padding: 6px 4px;
+      background: transparent; font-family: inherit; color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .dane-bottom-row input.invalid { border-bottom-color: var(--red) !important; }
+    .error-msg { display: none; color: var(--red); font-size: 13px; font-weight: 600; margin-top: 12px; }
+    .error-msg.visible { display: block; }
+    .unlock-hint { font-size: 12.5px; color: var(--muted); margin-top: 12px; display: flex; align-items: center; gap: 6px; }
+    .unlock-hint.unlocked { color: #1a6640; font-weight: 600; }
+
+    /* POBIERZ */
+    .pobierz-section { margin-top: 20px; padding: 20px 24px; background: var(--teal-light); border-radius: 10px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .btn-pobierz {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--teal); color: #fff; border: none;
+      font-size: 14px; font-weight: 700; font-family: inherit;
+      padding: 11px 24px; border-radius: 7px; cursor: pointer; transition: background 0.15s;
+    }
+    .btn-pobierz:hover:not(:disabled) { background: var(--teal-dark); }
+    .btn-pobierz:disabled { background: #b0bfba; color: #dde8e4; cursor: not-allowed; }
+    .pobierz-info { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* ODDANIE */
+    .oddanie { background: var(--teal); color: #fff; border-radius: 10px; padding: 24px 28px; margin-top: 8px; }
+    .oddanie h2 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+    .oddanie p { font-size: 13.5px; line-height: 1.65; color: rgba(255,255,255,0.85); margin-bottom: 8px; }
+    .oddanie p strong { color: #fff; }
+
+    /* AUTOSAVE */
+    .autosave-bar { position: fixed; top: 0; left: 0; right: 0; background: var(--teal-dark); color: #fff; font-size: 12px; font-family: 'Segoe UI', Arial, sans-serif; padding: 6px 20px; display: flex; align-items: center; gap: 10px; z-index: 999; }
+    .autosave-bar .as-status { font-weight: 600; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+    @media (max-width: 600px) {
+      .container { padding: 28px 20px; }
+      body { padding-top: 62px; }
+      .grid-2 { flex-direction: column; }
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .container { box-shadow: none; padding: 20px; }
+      .pobierz-section, .autosave-bar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="autosave-bar">
+  <span>&#128190;</span>
+  <span>Postęp zapisuje się automatycznie w tej przeglądarce.</span>
+  <span class="as-status" id="as-status">Możesz zamknąć i wrócić później.</span>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Protokół Zlecenia Marketingu</h1>
+    <div class="subtitle">Zadanie W9 &nbsp;|&nbsp; Akademia Managera &nbsp;|&nbsp; prowadząca: Beata Fąfara</div>
+    <div class="deadline">Deadline: 08.06.2026 (poniedziałek), godz. 23:59</div>
+  </div>
+
+  <!-- UWAGA TECHNICZNA -->
+  <div class="callout callout-warn">
+    <strong>Zanim zaczniesz — ważna informacja techniczna:</strong><br><br>
+    Ten formularz zapisuje Twój postęp automatycznie w przeglądarce, z której korzystasz.
+    Możesz go zamknąć i wrócić później — dane będą czekać.<br><br>
+    <strong>Przez cały czas używaj tego samego komputera i tej samej przeglądarki.</strong>
+    Jeśli otworzysz plik na innym urządzeniu lub w innej przeglądarce, zaczniesz od pustego formularza.
+  </div>
+
+  <!-- INSTRUKCJA -->
+  <div class="callout">
+    <strong>Instrukcja:</strong><br><br>
+    Wypełnij <strong>Protokół Zlecenia Marketingu</strong> dla jednego konkretnego zlecenia — istniejącego, planowanego lub opartego na danych FizjoBalance (materiały na WebToLearn). Protokół nie może być pusty ani ogólnikowy.<br><br>
+    Kryterium zaliczenia: konkretny cel (liczba lub efekt), termin, kryterium sukcesu w liczbach i harmonogram raportowania.
+  </div>
+
+  <!-- CALLOUT MANAGER -->
+  <div class="callout callout-info" style="margin-bottom:28px;">
+    <strong>Manager:</strong> Wybierz jeden kanał marketingowy gabinetu, który chciałbyś/chciałabyś usprawnić, i wypełnij protokół tak, żeby był gotowy do przedstawienia właścicielowi lub agencji. Sekcja „Pytania kontrolne" zostanie ukryta po zaznaczeniu roli managera.
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar">
+    <span class="progress-label">Wypełniono:</span>
+    <span class="progress-count" id="progress-count">0 / 8 elementów</span>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+
+  <!-- ROLA SELECTOR -->
+  <div class="rola-section">
+    <span class="rola-label">Moja rola w gabinecie</span>
+    <div class="rola-row">
+      <button type="button" class="rola-btn" id="rola-wlasciciel" onclick="selectRola('wlasciciel')">Właściciel gabinetu</button>
+      <button type="button" class="rola-btn" id="rola-manager" onclick="selectRola('manager')">Manager</button>
+    </div>
+  </div>
+
+  <!-- PROTOKÓŁ -->
+  <div class="protokol-blok">
+    <div class="blok-header">Protokół Zlecenia — wypełnij wszystkie 8 elementów</div>
+    <div class="blok-body">
+
+      <!-- 1 -->
+      <div class="elem-row">
+        <div class="elem-num">1</div>
+        <div class="elem-content">
+          <div class="elem-title">Cel biznesowy</div>
+          <div class="elem-hint">Co konkretnie chcemy osiągnąć? Liczba, efekt lub działanie — nie ogólnik. Np. „15 nowych zapytań z Facebooka w czerwcu" zamiast „zwiększyć widoczność".</div>
+          <textarea id="el-1" placeholder="Wpisz konkretny cel..." oninput="zapiszStan(); updateProgress()"></textarea>
+        </div>
+      </div>
+
+      <hr class="blok-sep">
+
+      <!-- 2 -->
+      <div class="elem-row">
+        <div class="elem-num">2</div>
+        <div class="elem-content">
+          <div class="elem-title">Grupa odbiorców</div>
+          <div class="elem-hint">Do kogo mówimy? Profil, potrzeba, gdzie są — online i offline.</div>
+          <textarea id="el-2" placeholder="Opisz grupę odbiorców..." oninput="zapiszStan(); updateProgress()"></textarea>
+        </div>
+      </div>
+
+      <hr class="blok-sep">
+
+      <!-- 3 -->
+      <div class="elem-row">
+        <div class="elem-num">3</div>
+        <div class="elem-content">
+          <div class="elem-title">Oferta / temat</div>
+          <div class="elem-hint">Co komunikujemy? Jeden główny komunikat — nie lista usług.</div>
+          <textarea id="el-3" class="short" placeholder="Np. „Rehabilitacja kręgosłupa — pierwsza wizyta bez skierowania"" oninput="zapiszStan(); updateProgress()"></textarea>
+        </div>
+      </div>
+
+      <hr class="blok-sep">
+
+      <!-- 4 -->
+      <div class="elem-row">
+        <div class="elem-num">4</div>
+        <div class="elem-content">
+          <div class="elem-title">Kanał</div>
+          <div class="elem-hint">Zaznacz jeden główny kanał, a następnie napisz uzasadnienie wyboru.</div>
+          <div class="kanal-row" id="kanal-row">
+            <button type="button" class="kanal-btn" data-value="facebook"  onclick="selectKanal('facebook')">Facebook</button>
+            <button type="button" class="kanal-btn" data-value="instagram" onclick="selectKanal('instagram')">Instagram</button>
+            <button type="button" class="kanal-btn" data-value="gmf"       onclick="selectKanal('gmf')">Google Moja Firma</button>
+            <button type="button" class="kanal-btn" data-value="googleads" onclick="selectKanal('googleads')">Google Ads</button>
+            <button type="button" class="kanal-btn" data-value="www"       onclick="selectKanal('www')">Strona www</button>
+            <button type="button" class="kanal-btn" data-value="email"     onclick="selectKanal('email')">E-mail</button>
+            <button type="button" class="kanal-btn" data-value="sms"       onclick="selectKanal('sms')">SMS</button>
+            <button type="button" class="kanal-btn" data-value="inne"      onclick="selectKanal('inne')">Inne</button>
+          </div>
+          <textarea id="el-4" class="short" placeholder="Dlaczego ten kanał, a nie inny?" oninput="zapiszStan(); updateProgress()"></textarea>
+        </div>
+      </div>
+
+      <hr class="blok-sep">
+
+      <!-- 5 -->
+      <div class="elem-row">
+        <div class="elem-num">5</div>
+        <div class="elem-content">
+          <div class="elem-title">Osoba odpowiedzialna</div>
+          <div class="elem-hint">Kto wykonuje, kto zatwierdza — dwie role, nie jedna.</div>
+          <div class="grid-2">
+            <div>
+              <span class="col-label">Kto wykonuje</span>
+              <input type="text" id="el-5a" placeholder="np. Agnieszka (marketing)" oninput="zapiszStan(); updateProgress()">
+            </div>
+            <div>
+              <span class="col-label">Kto zatwierdza</span>
+              <input type="text" id="el-5b" placeholder="np. właściciel / manager" oninput="zapiszStan(); updateProgress()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="blok-sep">
+
+      <!-- 6 -->
+      <div class="elem-row">
+        <div class="elem-num">6</div>
+        <div class="elem-content">
+          <div class="elem-title">Termin i budżet</div>
+          <div class="elem-hint">Konkretna data i konkretna kwota lub szacunek godzin.</div>
+          <div class="grid-2">
+            <div>
+              <span class="col-label">Termin</span>
+              <input type="text" id="el-6a" placeholder="np. 30.06.2026" oninput="zapiszStan(); updateProgress()">
+            </div>
+            <div>
+              <span class="col-label">Budżet (PLN lub godz.)</span>
+              <input type="text" id="el-6b" placeholder="np. 800 PLN / 4h" oninput="zapiszStan(); updateProgress()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="blok-sep">
+
+      <!-- 7 -->
+      <div class="elem-row">
+        <div class="elem-num">7</div>
+        <div class="elem-content">
+          <div class="elem-title">Mierniki sukcesu</div>
+          <div class="elem-hint">Po czym poznamy, że działa? Maksymalnie 2 mierniki — liczby, nie słowa. Np. „25 kliknięć tygodniowo" albo „5 nowych zapytań".</div>
+          <textarea id="el-7" class="short" placeholder="Miernik 1: ...&#10;Miernik 2: ..." oninput="zapiszStan(); updateProgress()"></textarea>
+        </div>
+      </div>
+
+      <hr class="blok-sep">
+
+      <!-- 8 -->
+      <div class="elem-row" style="margin-bottom:0">
+        <div class="elem-num">8</div>
+        <div class="elem-content">
+          <div class="elem-title">Forma i częstotliwość raportowania</div>
+          <div class="elem-hint">Kto, co i kiedy raportuje? Konkretny schemat — nie „na bieżąco". Np. „Agnieszka wysyła co piątek zestawienie zasięgów i kliknięć".</div>
+          <textarea id="el-8" class="short" placeholder="Kto raportuje, co raportuje, kiedy i jak..." oninput="zapiszStan(); updateProgress()"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PYTANIA KONTROLNE — tylko właściciel -->
+  <div class="pytania-blok hidden" id="pytania-blok">
+    <div class="blok-header">Pytania kontrolne przed każdym zleceniem (właściciel)</div>
+    <div class="blok-body">
+      <p style="font-size:14px; color:var(--muted); margin-bottom:20px; line-height:1.65;">
+        Wypisz 3–5 pytań, które będziesz zadawać <strong>zawsze</strong> przed każdym zleceniem marketingowym — niezależnie od kanału czy budżetu.
+      </p>
+      <input type="text" class="pytanie-input" id="pyt-1" placeholder="Pytanie 1: ..." oninput="zapiszStan()">
+      <input type="text" class="pytanie-input" id="pyt-2" placeholder="Pytanie 2: ..." oninput="zapiszStan()">
+      <input type="text" class="pytanie-input" id="pyt-3" placeholder="Pytanie 3: ..." oninput="zapiszStan()">
+      <input type="text" class="pytanie-input" id="pyt-4" placeholder="Pytanie 4 (opcjonalnie): ..." oninput="zapiszStan()">
+      <input type="text" class="pytanie-input" id="pyt-5" placeholder="Pytanie 5 (opcjonalnie): ..." oninput="zapiszStan()" style="margin-bottom:20px;">
+      <hr class="blok-sep" style="margin-top:0;">
+      <div class="elem-title" style="margin-bottom:6px;">Jak będę sprawdzać wyniki?</div>
+      <div class="elem-hint" style="margin-bottom:10px;">Opisz swój proces: kiedy siadasz do danych, co przeglądasz, z kim omawiasz wyniki.</div>
+      <textarea class="sprawdzanie-ta" id="sprawdzanie-wynikow" placeholder="np. Co 2 tygodnie w poniedziałek rano przeglądam raport i sprawdzam mierniki z punktu 7..." oninput="zapiszStan()"></textarea>
+    </div>
+  </div>
+
+  <!-- PODSUMOWANIE -->
+  <div class="summary-block">
+    <h3>Refleksja</h3>
+    <div class="summary-q">Ile czasu zamierzasz dać temu działaniu zanim ocenisz, czy działa — i po czym konkretnie to poznasz?</div>
+    <textarea id="podsumowanie" placeholder="Napisz konkretnie: ile czasu (tydzień? miesiąc?) i jaka liczba lub obserwacja będzie sygnałem że działa lub nie działa." oninput="zapiszStan()"></textarea>
+  </div>
+
+  <!-- DANE UCZESTNIKA — na dole, blokuje pobieranie -->
+  <div class="dane-bottom-section" id="dane-bottom-section">
+    <h3>&#128221; Twoje dane — wymagane do pobrania formularza</h3>
+    <div class="dane-bottom-row">
+      <div>
+        <label class="dane-bottom-label" for="uczestnik-imie">Imię i nazwisko *</label>
+        <input type="text" id="uczestnik-imie" placeholder="np. Anna Kowalska"
+          oninput="zapiszStan(); clearDaneError(); updatePobierzBtn()">
+      </div>
+      <div>
+        <label class="dane-bottom-label" for="uczestnik-email">Adres e-mail *</label>
+        <input type="email" id="uczestnik-email" placeholder="np. anna@gabinet.pl"
+          oninput="zapiszStan(); clearDaneError()">
+      </div>
+    </div>
+    <div class="error-msg" id="dane-error">&#9888; Uzupełnij imię i nazwisko oraz adres e-mail przed pobraniem.</div>
+    <div class="unlock-hint" id="unlock-hint">&#128274; Wpisz imię i nazwisko (min. 2 słowa), aby odblokować pobieranie.</div>
+  </div>
+
+  <!-- POBIERZ -->
+  <div class="pobierz-section">
+    <button class="btn-pobierz" id="btn-pobierz" onclick="pobierzFormularz()" disabled>
+      &#8659; Pobierz wypełniony formularz
+    </button>
+    <div class="pobierz-info">
+      Kliknij, gdy skończysz wypełniać.<br>
+      Odblokuje się po wpisaniu imienia i nazwiska.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- JAK ODDAĆ -->
+  <div class="oddanie">
+    <h2>Jak oddać zadanie</h2>
+    <p>Pobierz wypełniony formularz przyciskiem powyżej, a następnie prześlij go przez formularz:</p>
+    <p style="margin-top:10px; font-size:15px; font-weight:700;">
+      <a href="https://forms.gle/cFytYbmKRicVR9pp7" target="_blank" rel="noopener" style="color:#fff; text-decoration:underline;">
+        &#128279; https://forms.gle/cFytYbmKRicVR9pp7
+      </a>
+    </p>
+    <p style="margin-top:14px"><strong>Kryterium zaliczenia:</strong> protokół wypełniony (nie pusty formularz), zawiera konkretny cel, grupę odbiorców, deadline, kryterium sukcesu w liczbach i harmonogram raportowania. Zaliczone albo niezaliczone.</p>
+    <p style="margin-top:10px"><strong>Feedback od Beaty</strong> otrzymasz do czwartku <strong>11.06.2026</strong>, godz. 23:59.</p>
+  </div>
+
+</div>
+
+<script>
+  const LS_KEY = 'w9_protokol';
+  let selectedKanal = '';
+  let selectedRola  = '';
+
+  // ── ROLA ─────────────────────────────────────────────────────────────────
+
+  function selectRola(rola) {
+    selectedRola = rola;
+    document.getElementById('rola-wlasciciel').classList.toggle('aktywny', rola === 'wlasciciel');
+    document.getElementById('rola-manager').classList.toggle('aktywny', rola === 'manager');
+    document.getElementById('pytania-blok').classList.toggle('hidden', rola === 'manager');
+    zapiszStan();
+  }
+
+  // ── KANAŁ ─────────────────────────────────────────────────────────────────
+
+  function selectKanal(val) {
+    selectedKanal = val;
+    document.querySelectorAll('.kanal-btn').forEach(btn => {
+      btn.classList.toggle('aktywny', btn.dataset.value === val);
+    });
+    zapiszStan();
+    updateProgress();
+  }
+
+  // ── PROGRESS ─────────────────────────────────────────────────────────────
+
+  function getVal(id) {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  function updateProgress() {
+    let count = 0;
+    if (getVal('el-1'))                      count++;
+    if (getVal('el-2'))                      count++;
+    if (getVal('el-3'))                      count++;
+    if (selectedKanal || getVal('el-4'))     count++;
+    if (getVal('el-5a') && getVal('el-5b')) count++;
+    if (getVal('el-6a') && getVal('el-6b')) count++;
+    if (getVal('el-7'))                      count++;
+    if (getVal('el-8'))                      count++;
+
+    const countEl = document.getElementById('progress-count');
+    const fillEl  = document.getElementById('progress-fill');
+    if (countEl) countEl.textContent = count + ' / 8 elementów';
+    if (fillEl)  fillEl.style.width  = (count / 8 * 100) + '%';
+  }
+
+  // ── WALIDACJA I PRZYCISK ──────────────────────────────────────────────────
+
+  function clearDaneError() {
+    document.getElementById('dane-error').classList.remove('visible');
+    document.getElementById('dane-bottom-section').classList.remove('error');
+    document.getElementById('uczestnik-imie').classList.remove('invalid');
+    document.getElementById('uczestnik-email').classList.remove('invalid');
+  }
+
+  function updatePobierzBtn() {
+    const imieEl      = document.getElementById('uczestnik-imie');
+    const btn         = document.getElementById('btn-pobierz');
+    const hint        = document.getElementById('unlock-hint');
+    const imie        = imieEl ? imieEl.value.trim() : '';
+    const hasFullName = imie.split(/\s+/).filter(Boolean).length >= 2;
+
+    btn.disabled = !hasFullName;
+
+    if (hasFullName) {
+      hint.innerHTML = '&#128275; Formularz odblokowany &mdash; możesz pobrać.';
+      hint.classList.add('unlocked');
+    } else {
+      hint.innerHTML = '&#128274; Wpisz imię i nazwisko (min. 2 słowa), aby odblokować pobieranie.';
+      hint.classList.remove('unlocked');
+    }
+  }
+
+  function walidujDane() {
+    const imieEl    = document.getElementById('uczestnik-imie');
+    const emailEl   = document.getElementById('uczestnik-email');
+    const errEl     = document.getElementById('dane-error');
+    const sectionEl = document.getElementById('dane-bottom-section');
+    const imie  = imieEl.value.trim();
+    const email = emailEl.value.trim();
+    let valid = true;
+
+    imieEl.classList.remove('invalid');
+    emailEl.classList.remove('invalid');
+    if (imie.split(/\s+/).filter(Boolean).length < 2) { imieEl.classList.add('invalid'); valid = false; }
+    if (!email || !email.includes('@'))               { emailEl.classList.add('invalid'); valid = false; }
+
+    if (!valid) {
+      errEl.classList.add('visible');
+      sectionEl.classList.add('error');
+      sectionEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      errEl.classList.remove('visible');
+      sectionEl.classList.remove('error');
+    }
+    return valid;
+  }
+
+  // ── AUTOSAVE ──────────────────────────────────────────────────────────────
+
+  function zapiszStan() {
+    const stan = {
+      imie:        document.getElementById('uczestnik-imie').value  || '',
+      email:       document.getElementById('uczestnik-email').value || '',
+      rola:        selectedRola,
+      kanal:       selectedKanal,
+      el1:         getVal('el-1'),
+      el2:         getVal('el-2'),
+      el3:         getVal('el-3'),
+      el4:         getVal('el-4'),
+      el5a:        getVal('el-5a'),
+      el5b:        getVal('el-5b'),
+      el6a:        getVal('el-6a'),
+      el6b:        getVal('el-6b'),
+      el7:         getVal('el-7'),
+      el8:         getVal('el-8'),
+      pyt1:        getVal('pyt-1'),
+      pyt2:        getVal('pyt-2'),
+      pyt3:        getVal('pyt-3'),
+      pyt4:        getVal('pyt-4'),
+      pyt5:        getVal('pyt-5'),
+      sprawdzanie: getVal('sprawdzanie-wynikow'),
+      podsumowanie: getVal('podsumowanie')
+    };
+    try { localStorage.setItem(LS_KEY, JSON.stringify(stan)); } catch(e) {}
+    const st = document.getElementById('as-status');
+    if (st) {
+      const t = new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+      st.textContent = 'Ostatni zapis: ' + t;
+    }
+  }
+
+  function wczytajStan() {
+    if (document.body.getAttribute('data-downloaded') === 'true') return;
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    try {
+      const s = JSON.parse(raw);
+      const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+      set('uczestnik-imie',      s.imie);
+      set('uczestnik-email',     s.email);
+      set('el-1',                s.el1);
+      set('el-2',                s.el2);
+      set('el-3',                s.el3);
+      set('el-4',                s.el4);
+      set('el-5a',               s.el5a);
+      set('el-5b',               s.el5b);
+      set('el-6a',               s.el6a);
+      set('el-6b',               s.el6b);
+      set('el-7',                s.el7);
+      set('el-8',                s.el8);
+      set('pyt-1',               s.pyt1);
+      set('pyt-2',               s.pyt2);
+      set('pyt-3',               s.pyt3);
+      set('pyt-4',               s.pyt4);
+      set('pyt-5',               s.pyt5);
+      set('sprawdzanie-wynikow', s.sprawdzanie);
+      set('podsumowanie',        s.podsumowanie);
+      if (s.rola)  selectRola(s.rola);
+      if (s.kanal) selectKanal(s.kanal);
+    } catch(e) {}
+  }
+
+  document.addEventListener('input', zapiszStan);
+  setInterval(zapiszStan, 10000);
+
+  // ── POBIERZ ───────────────────────────────────────────────────────────────
+
+  function pobierzFormularz() {
+    if (!walidujDane()) return;
+    zapiszStan();
+
+    const klon = document.documentElement.cloneNode(true);
+
+    // Textarea
+    const tOryg = document.querySelectorAll('textarea');
+    const tKlon = klon.querySelectorAll('textarea');
+    tOryg.forEach((el, i) => {
+      if (!tKlon[i]) return;
+      tKlon[i].innerHTML = el.value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    });
+
+    // Input text / email
+    const inpOryg = document.querySelectorAll('input[type="text"], input[type="email"]');
+    const inpKlon = klon.querySelectorAll('input[type="text"], input[type="email"]');
+    inpOryg.forEach((el, i) => {
+      if (inpKlon[i]) inpKlon[i].setAttribute('value', el.value);
+    });
+
+    // Rola buttons
+    ['rola-wlasciciel', 'rola-manager'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn && btn.classList.contains('aktywny')) {
+        const kb = klon.querySelector('#' + id);
+        if (kb) kb.classList.add('aktywny');
+      }
+    });
+
+    // Kanał buttons
+    if (selectedKanal) {
+      const kb = klon.querySelector('#kanal-row [data-value="' + selectedKanal + '"]');
+      if (kb) kb.classList.add('aktywny');
+    }
+
+    // Pytania blok widoczność
+    const pytBlok  = document.getElementById('pytania-blok');
+    const kPytBlok = klon.querySelector('#pytania-blok');
+    if (kPytBlok) kPytBlok.classList.toggle('hidden', pytBlok.classList.contains('hidden'));
+
+    // Progress
+    const fillEl  = document.getElementById('progress-fill');
+    const countEl = document.getElementById('progress-count');
+    const fk = klon.querySelector('#progress-fill');
+    const ck = klon.querySelector('#progress-count');
+    if (fillEl && fk) fk.style.width   = fillEl.style.width;
+    if (countEl && ck) ck.textContent  = countEl.textContent;
+
+    klon.querySelectorAll('.pobierz-section').forEach(el => el.remove());
+    klon.querySelectorAll('.error-msg').forEach(el => { el.style.display = 'none'; });
+    klon.querySelector('body').setAttribute('data-downloaded', 'true');
+
+    const imie = document.getElementById('uczestnik-imie').value.trim();
+    const safeName = imie.replace(/[^a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]/g, '').replace(/\s+/g, '_') || 'uczestnik';
+
+    const html = '<!DOCTYPE html>\n' + klon.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      alert('Twój formularz otworzył się w nowej karcie.\n\nJak go zapisać na iPhone:\n1. Naciśnij ikonę udostępniania (prostokąt ze strzałką ↑)\n2. Wybierz „Zapisz na urządzeniu" lub „Pliki"\n3. Gotowe — wyślij przez formularz na WebToLearn.');
+      return;
+    }
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'W9_Protokol_' + safeName + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ── INIT ──────────────────────────────────────────────────────────────────
+
+  document.addEventListener('DOMContentLoaded', function() {
+    wczytajStan();
+    updateProgress();
+    updatePobierzBtn();
+  });
+</script>
+
+</body>
+</html>
