@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>W13 — Plan Strategiczny na Kwartał | Akademia Managera</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark:       #0f2820;
+      --teal:       #1d4d3f;
+      --teal-mid:   #2d6b5a;
+      --teal-light: #e8f0ec;
+      --teal-pale:  #f0f5f2;
+      --gold:       #c9a84c;
+      --gold-light: #fdf8ed;
+      --gold-mid:   #e0c874;
+      --cream:      #faf8f3;
+      --white:      #ffffff;
+      --text:       #1a1a1a;
+      --muted:      #5a6b65;
+      --border:     #d8e2dc;
+      --red:        #c0392b;
+      --red-light:  #fdf0ee;
+    }
+
+    body {
+      font-family: 'Segoe UI', Georgia, Arial, sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      padding: 40px 20px 60px;
+      padding-top: 76px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 40px rgba(15,40,32,0.14);
+    }
+
+    /* ═══ HEADER ═══ */
+    .header {
+      background: var(--teal);
+      padding: 48px 52px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), #edd98a, var(--gold), transparent);
+    }
+    .header-deco {
+      position: absolute; right: -30px; top: -30px;
+      width: 220px; height: 220px; border-radius: 50%;
+      border: 55px solid rgba(201,168,76,0.06);
+    }
+    .header-deco2 {
+      position: absolute; right: 90px; bottom: -55px;
+      width: 150px; height: 150px; border-radius: 50%;
+      border: 38px solid rgba(201,168,76,0.04);
+    }
+    .header-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+    }
+    .header h1 {
+      font-size: 28px; font-weight: 800; color: #fff;
+      letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 8px;
+    }
+    .header .subtitle {
+      font-size: 13.5px; color: rgba(255,255,255,0.5); margin-top: 4px;
+    }
+    .header-deadline {
+      display: inline-block; margin-top: 20px;
+      color: var(--gold); border: 1px solid rgba(201,168,76,0.45);
+      font-size: 12px; font-weight: 600; padding: 5px 14px;
+      border-radius: 4px; letter-spacing: 0.5px;
+    }
+
+    /* ═══ BODY ═══ */
+    .body-wrap { padding: 40px 52px 52px; }
+
+    /* INSTRUKCJA */
+    .instrukcja {
+      border: 1px solid var(--gold-mid);
+      border-left: 4px solid var(--gold);
+      border-radius: 0 10px 10px 0;
+      background: var(--gold-light);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      font-size: 13.5px;
+      color: #3a300a;
+      line-height: 1.75;
+    }
+    .instrukcja strong { color: var(--dark); }
+    .sciezki { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+    .sciezka-pill {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: var(--white);
+      border: 1px solid var(--gold-mid);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 13px; color: var(--dark);
+    }
+    .sciezka-pill .pill-icon { flex-shrink: 0; font-size: 15px; margin-top: 1px; }
+
+    /* AUTOSAVE INFO */
+    .callout-tech {
+      background: var(--teal-pale);
+      border-left: 4px solid var(--teal);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* PROGRESS */
+    .progress-wrap {
+      display: flex; align-items: center; gap: 16px;
+      background: var(--teal-pale); border-radius: 10px;
+      padding: 14px 20px; margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .progress-label { font-size: 13px; color: var(--muted); white-space: nowrap; }
+    .progress-count { font-size: 15px; font-weight: 700; color: var(--teal); white-space: nowrap; min-width: 80px; }
+    .progress-track { flex: 1; min-width: 120px; height: 6px; background: #c2d4ce; border-radius: 4px; overflow: hidden; }
+    .progress-fill  { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal-mid)); border-radius: 4px; transition: width 0.3s; width: 0%; }
+
+    /* SEKCJA */
+    .sekcja { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 24px; background: #fff; overflow: hidden; }
+    .sekcja-header { background: var(--teal); padding: 14px 28px; display: flex; align-items: center; gap: 14px; }
+    .sekcja-num {
+      width: 26px; height: 26px;
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .sekcja-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #fff; }
+    .sekcja-sub { font-size: 12.5px; color: rgba(255,255,255,0.65); margin-top: 3px; }
+    .sekcja-body { padding: 28px 32px; }
+
+    /* ELEMENTY */
+    .elem-row { display: flex; align-items: flex-start; margin-bottom: 22px; }
+    .elem-row:last-child { margin-bottom: 0; }
+    .elem-badge {
+      width: 28px; height: 28px;
+      background: var(--gold-light); border: 1px solid var(--gold-mid); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: var(--dark);
+      flex-shrink: 0; margin-right: 16px; margin-top: 2px;
+    }
+    .elem-content { flex: 1; }
+    .elem-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); margin-bottom: 4px; }
+    .elem-hint { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.6; }
+
+    textarea {
+      width: 100%; border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 13px; font-size: 14px; font-family: inherit;
+      color: var(--text); resize: vertical; outline: none;
+      line-height: 1.65; min-height: 100px; background: #fff;
+      transition: border-color 0.2s;
+    }
+    textarea:focus { border-color: var(--teal); }
+    textarea.short  { min-height: 58px; }
+    textarea.medium { min-height: 78px; }
+
+    .blok-sep { border: none; border-top: 1px solid var(--teal-light); margin: 22px 0; }
+
+    /* PRIORYTET */
+    .priorytet-blok {
+      background: var(--teal-pale); border: 1px solid var(--border);
+      border-radius: 10px; padding: 22px 24px; margin-bottom: 18px;
+    }
+    .priorytet-blok:last-child { margin-bottom: 0; }
+    .priorytet-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--gold); background: var(--teal);
+      display: inline-block; padding: 3px 10px; border-radius: 3px; margin-bottom: 16px;
+    }
+    .priorytet-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    .p-field label {
+      display: block; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--muted); margin-bottom: 5px;
+    }
+
+    /* RYTM */
+    .rytm-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+
+    /* KONSPEKT */
+    .konspekt-info {
+      background: var(--teal-light); border-radius: 8px;
+      padding: 14px 18px; font-size: 13px; color: var(--teal);
+      margin-bottom: 18px; line-height: 1.6;
+    }
+    .konspekt-table { width: 100%; border-collapse: collapse; font-family: 'Segoe UI', Arial, sans-serif; }
+    .konspekt-table th {
+      background: var(--teal); color: #fff;
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+      padding: 10px 14px; text-align: left;
+    }
+    .konspekt-table td { border: 1px solid var(--border); padding: 6px 10px; vertical-align: top; }
+    .konspekt-table .td-blok { font-size: 13px; color: var(--muted); font-weight: 600; white-space: normal; padding: 10px 14px; width: 160px; max-width: 160px; }
+    .konspekt-table .td-czas { width: 70px; text-align: center; font-size: 13px; color: var(--muted); font-weight: 600; }
+    .konspekt-table textarea { min-height: 50px; border: none; background: transparent; padding: 4px; resize: none; font-size: 13px; min-height: 48px; }
+    .konspekt-table textarea:focus { background: var(--teal-pale); border-radius: 4px; outline: none; }
+
+    /* DANE */
+    .dane-section {
+      background: var(--gold-light); border: 2px solid var(--gold-mid);
+      border-radius: 12px; padding: 24px 28px; margin-bottom: 20px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .dane-section.error { border-color: var(--red); background: var(--red-light); }
+    .dane-section h3 {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.2px; color: var(--dark); margin-bottom: 16px;
+    }
+    .dane-row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .dane-row > div { flex: 1; min-width: 200px; }
+    .dane-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+    .dane-row input {
+      width: 100%; border: none; border-bottom: 2px solid var(--teal);
+      outline: none; font-size: 15px; padding: 6px 4px;
+      background: transparent; font-family: inherit; color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .dane-row input.invalid { border-bottom-color: var(--red) !important; }
+    .error-msg { display: none; color: var(--red); font-size: 13px; font-weight: 600; margin-top: 12px; }
+    .error-msg.visible { display: block; }
+    .unlock-hint { font-size: 12.5px; color: var(--muted); margin-top: 12px; display: flex; align-items: center; gap: 6px; }
+    .unlock-hint.unlocked { color: #1a6640; font-weight: 600; }
+
+    /* POBIERZ */
+    .pobierz-section {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      padding: 20px 24px; background: var(--teal-pale); border-radius: 10px; margin-bottom: 24px;
+    }
+    .btn-pobierz {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--teal); color: #fff; border: none;
+      font-size: 14px; font-weight: 700; font-family: inherit;
+      padding: 12px 28px; border-radius: 8px; cursor: pointer; transition: background 0.15s;
+      letter-spacing: 0.3px;
+    }
+    .btn-pobierz:hover:not(:disabled) { background: var(--dark); }
+    .btn-pobierz:disabled { background: #b0bfba; color: #dde8e4; cursor: not-allowed; }
+    .pobierz-info { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ODDANIE */
+    .oddanie {
+      background: var(--dark); border-radius: 12px;
+      padding: 28px 32px; position: relative; overflow: hidden;
+    }
+    .oddanie::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), #edd98a, var(--gold), transparent);
+    }
+    .oddanie h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--gold); margin-bottom: 12px; }
+    .oddanie p { font-size: 13.5px; line-height: 1.7; color: rgba(255,255,255,0.72); margin-bottom: 8px; }
+    .oddanie p:last-child { margin-bottom: 0; }
+    .oddanie p strong { color: #fff; }
+    .oddanie a { color: var(--gold); text-decoration: underline; }
+
+    /* WARIANT SELEKTOR */
+    .wariant-selektor { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    .wariant-card {
+      flex: 1; min-width: 200px; border: 2px solid var(--border); border-radius: 10px;
+      padding: 14px 18px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .wariant-card:hover { border-color: var(--teal-mid); background: var(--teal-pale); }
+    .wariant-card.aktywny { border-color: var(--teal); background: var(--teal-pale); }
+    .wariant-card input[type="radio"] { margin-top: 3px; accent-color: var(--teal); flex-shrink: 0; }
+    .wariant-card-title { font-size: 13px; font-weight: 700; color: var(--teal); margin-bottom: 3px; }
+    .wariant-card-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .wariant-opis { display: none; margin-bottom: 20px; }
+    .wariant-opis.aktywna { display: block; }
+    .wariant-placeholder { text-align: center; padding: 16px; border: 2px dashed var(--border); border-radius: 10px; color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+
+    /* AUTOSAVE BAR */
+    .autosave-bar {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: var(--dark); color: rgba(255,255,255,0.65);
+      font-size: 12px; font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 6px 20px; display: flex; align-items: center; gap: 10px; z-index: 999;
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+    }
+    .autosave-bar .as-status { font-weight: 600; color: var(--gold); }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+    @media (max-width: 680px) {
+      .header { padding: 36px 24px 32px; }
+      .body-wrap { padding: 28px 20px 40px; }
+      .wariant-selektor { flex-direction: column; }
+      body { padding-top: 66px; }
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .container { box-shadow: none; }
+      .pobierz-section, .autosave-bar, .oddanie { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- AUTOSAVE BAR -->
+<div class="autosave-bar">
+  <span>&#128190;</span>
+  <span>Postęp zapisuje się automatycznie w tej przeglądarce.</span>
+  <span class="as-status" id="as-status">Możesz zamknąć i wrócić później.</span>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-deco"></div>
+    <div class="header-deco2"></div>
+    <div class="header-label">&#127942;&nbsp; Finał &nbsp;·&nbsp; Akademia Managera</div>
+    <h1>Plan Strategiczny na Kwartał</h1>
+    <div class="subtitle">Zadanie W13 &nbsp;|&nbsp; Akademia Managera &nbsp;|&nbsp; prowadzący: Marcin Cebula</div>
+    <div class="header-deadline">&#127942; Happyline: dla prezentujących na Demo Day &mdash; 07.07.2026 (wtorek), godz. 10:00</div>
+    <div class="header-deadline" style="margin-top:8px;">&#128197; Dla nieprezentujących na Demo Day: 06.07.2026 (poniedziałek), godz. 23:59</div>
+  </div>
+
+  <div class="body-wrap">
+
+    <!-- INSTRUKCJA -->
+    <div class="instrukcja">
+      <strong>Zanim zaczniesz — wybierz swoją ścieżkę.</strong><br>
+      To jest ostatnie zadanie Akademii. Nie chodzi o to, żeby wyglądało mądrze — chodzi o to, żeby ten plan leżał na biurku i działał przez następny kwartał.
+    </div>
+
+    <!-- WYBÓR ŚCIEŻKI -->
+    <div class="wariant-selektor">
+      <label class="wariant-card" id="card-LIVE" onclick="wybierzWariant('LIVE')">
+        <input type="radio" name="sciezka" value="LIVE" id="radio-LIVE">
+        <div class="wariant-card-body">
+          <div class="wariant-card-title">&#127908; Prezentuję na Demo Day</div>
+          <div class="wariant-card-desc">07.07.2026 (wtorek), godz. 10:00</div>
+        </div>
+      </label>
+      <label class="wariant-card" id="card-PLIK" onclick="wybierzWariant('PLIK')">
+        <input type="radio" name="sciezka" value="PLIK" id="radio-PLIK">
+        <div class="wariant-card-body">
+          <div class="wariant-card-title">&#128196; Nie prezentuję na Demo Day</div>
+          <div class="wariant-card-desc">Przesyłam plik do 06.07.2026, godz. 23:59</div>
+        </div>
+      </label>
+    </div>
+
+    <div id="wariant-placeholder" class="wariant-placeholder">&#8679; Wybierz swoją ścieżkę — pojawi się szczegółowa instrukcja dla Ciebie.</div>
+
+    <div id="opis-LIVE" class="wariant-opis">
+      <div class="callout-tech" style="border-left-color:var(--gold);background:var(--gold-light);color:#3a300a;margin-bottom:0;">
+        <strong>Twoja ścieżka: prezentujesz live na Demo Day.</strong> Wypełnij Części 1, 2, 3 i 4 (konspekt prezentacji). Plik zostaje u Ciebie jako konspekt. <strong>Nie przesyłasz go przez formularz.</strong>
+      </div>
+    </div>
+
+    <div id="opis-PLIK" class="wariant-opis">
+      <div class="callout-tech" style="border-left-color:var(--gold);background:var(--gold-light);color:#3a300a;margin-bottom:0;">
+        <strong>Twoja ścieżka: przesyłasz plik.</strong> Wypełnij Części 1, 2 i 3 (Część 4 możesz pominąć). Pobierz plik przyciskiem na dole i prześlij go przez <a href="https://forms.gle/zQ58vXNwyQZmUqqNA" target="_blank" rel="noopener" style="color:var(--dark);font-weight:700;text-decoration:underline;">formularz</a> do <strong>06.07.2026 (poniedziałek), godz. 23:59</strong>.
+      </div>
+    </div>
+
+    <!-- TECH INFO -->
+    <div class="callout-tech" style="margin-top:16px;">
+      <strong>Ważne:</strong> Ten formularz zapisuje Twój postęp automatycznie w przeglądarce, z której korzystasz. Możesz zamknąć i wrócić później — dane będą czekać. <strong>Przez cały czas używaj tego samego komputera i tej samej przeglądarki.</strong>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-wrap">
+      <span class="progress-label">Wypełniono:</span>
+      <span class="progress-count" id="progress-count">0 / 15 pól</span>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+
+    <!-- ══ CZĘŚĆ 1 ══ -->
+    <div class="sekcja">
+      <div class="sekcja-header">
+        <div class="sekcja-num">1</div>
+        <div>
+          <div class="sekcja-title">Co zmieniłeś/aś w trakcie Akademii</div>
+          <div class="sekcja-sub">Minimum 8 wdrożeń — już zrealizowanych lub realnie w trakcie wdrażania</div>
+        </div>
+      </div>
+      <div class="sekcja-body">
+        <div class="elem-row">
+          <div class="elem-badge">&#9998;</div>
+          <div class="elem-content">
+            <div class="elem-title">Twoje wdrożenia z Akademii</div>
+            <div class="elem-hint">Wpisz minimum 8 rzeczy, które już wdrożyłeś/aś lub realnie zaczynasz wdrażać. Nie teoria — konkretne działania w Twoim gabinecie. Każde wdrożenie w osobnej linii.</div>
+            <textarea id="el-wdrozenia" placeholder="1.&#10;2.&#10;3.&#10;4.&#10;5.&#10;6.&#10;7.&#10;8." oninput="zapiszStan(); updateProgress()"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CZĘŚĆ 2 ══ -->
+    <div class="sekcja">
+      <div class="sekcja-header">
+        <div class="sekcja-num">2</div>
+        <div>
+          <div class="sekcja-title">Plan na kolejny kwartał</div>
+          <div class="sekcja-sub">Trzy priorytety — każdy z efektem, miernikiem, właścicielem i pierwszą akcją</div>
+        </div>
+      </div>
+      <div class="sekcja-body">
+
+        <!-- PRIORYTET 1 -->
+        <div class="priorytet-blok">
+          <div class="priorytet-label">Priorytet 1</div>
+          <div class="priorytet-grid">
+            <div class="p-field">
+              <label>Co ma się zmienić w firmie?</label>
+              <textarea id="el-p1-efekt" class="short" placeholder="Efekt — nie lista zadań. Co będzie inne?" oninput="zapiszStan(); updateProgress()"></textarea>
+            </div>
+            <div class="p-field">
+              <label>Kto jest właścicielem tego priorytetu?</label>
+              <textarea id="el-p1-wlasciciel" class="short" placeholder="Imię / rola" oninput="zapiszStan(); updateProgress()"></textarea>
+            </div>
+            <div class="p-field">
+              <label>Po czym poznasz, że to osiągnęliście?</label>
+              <textarea id="el-p1-miernik" class="short" placeholder="Konkretny miernik — coś, co można sprawdzić." oninput="zapiszStan(); updateProgress()"></textarea>
+            </div>
+            <div class="p-field">
+              <label>Pierwsze działanie w ciągu 7 dni</label>
+              <textarea id="el-p1-akcja" class="short" placeholder="Jedno konkretne działanie — co i kiedy?" oninput="zapiszStan(); updateProgress()"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRIORYTET 2 -->
+        <div class="priorytet-blok">
+          <div class="priorytet-label">Priorytet 2</div>
+          <div class="priorytet-grid">
+            <div class="p-field">
+              <label>Co ma się zmienić w firmie?</label>
+              <textarea id="el-p2-efekt" class="short" placeholder="Efekt — nie lista zadań. Co będzie inne?" oninput="zapiszStan(); updateProgress()"></textarea>
+            </div>
+            <div class="p-field">
+              <label>Kto jest właścicielem tego priorytetu?</label>
+              <textarea id="el-p2-wlasciciel" class="short" placeholder="Imię / rola" oninput="zapiszStan(); updateProgress()"></textarea>
+            </div>
+            <div class="p-field">
+              <label>Po czym poznasz, że to osiągnęliście?</label>
+              <textarea id="el-p2-miernik" class="short" placeholder="Konkretny miernik — coś, co można sprawdzić." oninput="zapiszStan(); updateProgress()"></textarea>
+            </div>
+            <div class="p-field">
+              <label>Pierwsze działanie w ciągu 7 dni</label>
+              <textarea id="el-p2-akcja" class="short" placeholder="Jedno konkretne działanie — co i kiedy?" oninput="zapiszStan(); updateProgress()"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRIORYTET 3 -->
+        <div class="priorytet-blok">
+          <div class="priorytet-label">Priorytet 3</div>
+          <div class="priorytet-grid">
+            <div class="p-field">
+              <label>Co ma się zmienić w firmie?</label>
+              <textarea id="el-p3-efekt" class="short" placeholder="Efekt — nie lista zadań. Co będzie inne?" oninput="zapiszStan(); updateProgress()"></textarea>
+            </div>
+            <div class="p-field">
+              <label>Kto jest właścicielem tego priorytetu?</label>
+              <textarea id="el-p3-wlasciciel" class="short" placeholder="Imię / rola" oninput="zapiszStan(); updateProgress()"></textarea>
+            </div>
+            <div class="p-field">
+              <label>Po czym poznasz, że to osiągnęliście?</label>
+              <textarea id="el-p3-miernik" class="short" placeholder="Konkretny miernik — coś, co można sprawdzić." oninput="zapiszStan(); updateProgress()"></textarea>
+            </div>
+            <div class="p-field">
+              <label>Pierwsze działanie w ciągu 7 dni</label>
+              <textarea id="el-p3-akcja" class="short" placeholder="Jedno konkretne działanie — co i kiedy?" oninput="zapiszStan(); updateProgress()"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ CZĘŚĆ 3 ══ -->
+    <div class="sekcja">
+      <div class="sekcja-header">
+        <div class="sekcja-num">3</div>
+        <div>
+          <div class="sekcja-title">Rytm sprawdzania postępu</div>
+          <div class="sekcja-sub">Jak ten plan będzie żył w Twoim kalendarzu</div>
+        </div>
+      </div>
+      <div class="sekcja-body">
+        <div class="rytm-grid">
+          <div>
+            <div class="elem-title" style="margin-bottom:6px;">Rytm tygodniowy</div>
+            <div class="elem-hint">Kiedy i co sprawdzasz co tydzień?</div>
+            <textarea id="el-rytm-tyg" class="medium" placeholder="Np. co poniedziałek, 15 min, patrzę na 3 mierniki i sprawdzam: co idzie, co blokuje, jedna decyzja." oninput="zapiszStan(); updateProgress()"></textarea>
+          </div>
+          <div>
+            <div class="elem-title" style="margin-bottom:6px;">Rytm miesięczny</div>
+            <div class="elem-hint">Co robisz raz na miesiąc, żeby plan nie umarł?</div>
+            <textarea id="el-rytm-mies" class="medium" placeholder="Np. pierwsze spotkanie każdego miesiąca: czy priorytety mają sens, co odciąć, co wzmocnić." oninput="zapiszStan(); updateProgress()"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CZĘŚĆ 4 (tylko dla prezentujących) ══ -->
+    <div class="sekcja">
+      <div class="sekcja-header">
+        <div class="sekcja-num">4</div>
+        <div>
+          <div class="sekcja-title">Konspekt prezentacji live</div>
+          <div class="sekcja-sub">Tylko dla prezentujących na Demo Day &mdash; masz 7 minut</div>
+        </div>
+      </div>
+      <div class="sekcja-body">
+        <div class="konspekt-info">
+          Poniższy podział to propozycja — dostosuj do siebie. Na Demo Day nie sprawdzamy, kto najładniej opowiada. Sprawdzamy, czy masz plan, który można wdrożyć.
+        </div>
+        <table class="konspekt-table">
+          <thead>
+            <tr>
+              <th>Blok</th>
+              <th>Czas</th>
+              <th>Twoje notatki</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-blok">Kim jestem i z czym przychodziłem/am</td>
+              <td class="td-czas">~1 min</td>
+              <td><textarea id="el-k1" placeholder="Krótko — gabinet, rola, największe wyzwanie przed Akademią." oninput="zapiszStan()"></textarea></td>
+            </tr>
+            <tr>
+              <td class="td-blok">Najważniejsze zmiany, które już wdrożyłem/am</td>
+              <td class="td-czas">~2 min</td>
+              <td><textarea id="el-k2" placeholder="Wybierz 3–4 z Części 1 — te, które czujesz najbardziej." oninput="zapiszStan()"></textarea></td>
+            </tr>
+            <tr>
+              <td class="td-blok">Mój plan na kwartał — 3 priorytety</td>
+              <td class="td-czas">~3 min</td>
+              <td><textarea id="el-k3" placeholder="Po jednym zdaniu na priorytet: efekt + miernik + właściciel." oninput="zapiszStan()"></textarea></td>
+            </tr>
+            <tr>
+              <td class="td-blok">Co zrobię w ciągu najbliższych 7 dni</td>
+              <td class="td-czas">~1 min</td>
+              <td><textarea id="el-k4" placeholder="Jedno konkretne działanie — co i kiedy." oninput="zapiszStan()"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- DANE UCZESTNIKA -->
+    <div class="dane-section" id="dane-section">
+      <h3>&#128221;&nbsp; Twoje dane — wymagane do pobrania</h3>
+      <div class="dane-row">
+        <div>
+          <label class="dane-label" for="uczestnik-imie">Imię i nazwisko *</label>
+          <input type="text" id="uczestnik-imie" placeholder="np. Anna Kowalska"
+            oninput="zapiszStan(); clearDaneError(); updatePobierzBtn()">
+        </div>
+        <div>
+          <label class="dane-label" for="uczestnik-email">Adres e-mail *</label>
+          <input type="email" id="uczestnik-email" placeholder="np. anna@gabinet.pl"
+            oninput="zapiszStan(); clearDaneError(); updatePobierzBtn()">
+        </div>
+      </div>
+      <div class="error-msg" id="dane-error">&#9888; Uzupełnij imię i nazwisko (min. 2 słowa) ORAZ adres e-mail — oba pola są wymagane do pobrania.</div>
+      <div class="unlock-hint" id="unlock-hint">&#128274; Aby odblokować pobieranie, wpisz imię i nazwisko (min. 2 słowa) ORAZ adres e-mail.</div>
+    </div>
+
+    <!-- POBIERZ -->
+    <div class="pobierz-section">
+      <button class="btn-pobierz" id="btn-pobierz" onclick="pobierzFormularz()" disabled>
+        &#8659;&nbsp; Pobierz wypełniony formularz
+      </button>
+      <div class="pobierz-info">
+        Kliknij, gdy skończysz wypełniać.<br>
+        Odblokuje się po wpisaniu imienia, nazwiska <strong>i</strong> adresu e-mail.
+      </div>
+    </div>
+
+    <!-- JAK ODDAĆ -->
+    <div class="oddanie">
+      <h2>Jak oddać zadanie</h2>
+      <p><strong>Prezentujesz live na Demo Day (07.07)?</strong> Nie przesyłasz nic — ten plik zostaje u Ciebie jako konspekt i dokument do wdrożenia.</p>
+      <p><strong>Nie prezentujesz live?</strong> Pobierz wypełniony formularz przyciskiem powyżej i prześlij go przez formularz:</p>
+      <p style="margin-top:10px; font-size:15px; font-weight:700;">
+        <a href="https://forms.gle/zQ58vXNwyQZmUqqNA" target="_blank" rel="noopener">&#128279; Formularz oddania zadania W13</a>
+      </p>
+      <p style="margin-top:14px"><strong>Deadline:</strong> 06.07.2026 (poniedziałek), godz. 23:59.</p>
+      <p style="margin-top:8px"><strong>Feedback od Marcina</strong> do przesłanych planów strategicznych w formie pliku otrzymasz do <strong>10.07.2026, czwartek</strong>. Feedback dla osób prezentujących na Demo Day będzie udzielony podczas LIVE.</p>
+    </div>
+
+  </div><!-- /body-wrap -->
+</div><!-- /container -->
+
+<script>
+  const LS_KEY = 'w13_plan_kwartalny';
+
+  const POLA_PROGRESS = [
+    'el-wdrozenia',
+    'el-p1-efekt','el-p1-miernik','el-p1-wlasciciel','el-p1-akcja',
+    'el-p2-efekt','el-p2-miernik','el-p2-wlasciciel','el-p2-akcja',
+    'el-p3-efekt','el-p3-miernik','el-p3-wlasciciel','el-p3-akcja',
+    'el-rytm-tyg','el-rytm-mies'
+  ];
+
+  const WSZYSTKIE_TEXTAREA = [
+    ...POLA_PROGRESS,
+    'el-k1','el-k2','el-k3','el-k4'
+  ];
+
+  function getVal(id) {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  // ── WARIANT ───────────────────────────────────────────────────────────────
+
+  function wybierzWariant(w) {
+    ['LIVE','PLIK'].forEach(v => {
+      const card = document.getElementById('card-' + v);
+      const radio = document.getElementById('radio-' + v);
+      const opis  = document.getElementById('opis-' + v);
+      if (card)  card.classList.toggle('aktywny', v === w);
+      if (radio) radio.checked = (v === w);
+      if (opis)  { opis.classList.toggle('aktywna', v === w); }
+    });
+    const ph = document.getElementById('wariant-placeholder');
+    if (ph) ph.style.display = 'none';
+    zapiszStan();
+  }
+
+  // ── PROGRESS ──────────────────────────────────────────────────────────────
+
+  function updateProgress() {
+    const count = POLA_PROGRESS.filter(id => getVal(id).length > 0).length;
+    const total = POLA_PROGRESS.length;
+    const countEl = document.getElementById('progress-count');
+    const fillEl  = document.getElementById('progress-fill');
+    if (countEl) countEl.textContent = count + ' / ' + total + ' pól';
+    if (fillEl)  fillEl.style.width  = (count / total * 100) + '%';
+  }
+
+  // ── WALIDACJA ─────────────────────────────────────────────────────────────
+
+  function clearDaneError() {
+    document.getElementById('dane-error').classList.remove('visible');
+    document.getElementById('dane-section').classList.remove('error');
+    document.getElementById('uczestnik-imie').classList.remove('invalid');
+    document.getElementById('uczestnik-email').classList.remove('invalid');
+  }
+
+  function updatePobierzBtn() {
+    const imieEl  = document.getElementById('uczestnik-imie');
+    const emailEl = document.getElementById('uczestnik-email');
+    const btn     = document.getElementById('btn-pobierz');
+    const hint    = document.getElementById('unlock-hint');
+    const imie    = imieEl  ? imieEl.value.trim()  : '';
+    const email   = emailEl ? emailEl.value.trim() : '';
+    const hasName  = imie.split(/\s+/).filter(Boolean).length >= 2;
+    const hasEmail = email.includes('@') && email.length > 4;
+
+    btn.disabled = !(hasName && hasEmail);
+
+    if (hasName && hasEmail) {
+      hint.innerHTML = '&#128275; Formularz odblokowany &mdash; możesz pobrać.';
+      hint.classList.add('unlocked');
+    } else if (!hasName && !hasEmail) {
+      hint.innerHTML = '&#128274; Aby odblokować pobieranie, wpisz imię i nazwisko (min. 2 słowa) ORAZ adres e-mail.';
+      hint.classList.remove('unlocked');
+    } else if (!hasName) {
+      hint.innerHTML = '&#128274; Brakuje imienia i nazwiska (min. 2 słowa) &mdash; adres e-mail jest OK.';
+      hint.classList.remove('unlocked');
+    } else {
+      hint.innerHTML = '&#128274; Brakuje adresu e-mail &mdash; imię i nazwisko jest OK.';
+      hint.classList.remove('unlocked');
+    }
+  }
+
+  function walidujDane() {
+    const imieEl    = document.getElementById('uczestnik-imie');
+    const emailEl   = document.getElementById('uczestnik-email');
+    const errEl     = document.getElementById('dane-error');
+    const sectionEl = document.getElementById('dane-section');
+    const imie  = imieEl.value.trim();
+    const email = emailEl.value.trim();
+    let valid = true;
+
+    imieEl.classList.remove('invalid');
+    emailEl.classList.remove('invalid');
+    if (imie.split(/\s+/).filter(Boolean).length < 2) { imieEl.classList.add('invalid');  valid = false; }
+    if (!email || !email.includes('@'))               { emailEl.classList.add('invalid'); valid = false; }
+
+    if (!valid) {
+      errEl.classList.add('visible');
+      sectionEl.classList.add('error');
+      sectionEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      errEl.classList.remove('visible');
+      sectionEl.classList.remove('error');
+    }
+    return valid;
+  }
+
+  // ── AUTOSAVE ──────────────────────────────────────────────────────────────
+
+  function zapiszStan() {
+    const aktywny = document.querySelector('input[name="sciezka"]:checked');
+    const stan = {
+      imie:    document.getElementById('uczestnik-imie').value  || '',
+      email:   document.getElementById('uczestnik-email').value || '',
+      wariant: aktywny ? aktywny.value : null
+    };
+    WSZYSTKIE_TEXTAREA.forEach(id => { stan[id] = getVal(id); });
+    try { localStorage.setItem(LS_KEY, JSON.stringify(stan)); } catch(e) {}
+    const st = document.getElementById('as-status');
+    if (st) {
+      const t = new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+      st.textContent = 'Ostatni zapis: ' + t;
+    }
+  }
+
+  function wczytajStan() {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    try {
+      const s = JSON.parse(raw);
+      const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+      set('uczestnik-imie',  s.imie);
+      set('uczestnik-email', s.email);
+      WSZYSTKIE_TEXTAREA.forEach(id => { set(id, s[id]); });
+      if (s.wariant) wybierzWariant(s.wariant);
+    } catch(e) {}
+  }
+
+  document.addEventListener('input', zapiszStan);
+  setInterval(zapiszStan, 10000);
+
+  // ── POBIERZ ───────────────────────────────────────────────────────────────
+
+  function pobierzFormularz() {
+    if (!walidujDane()) return;
+    zapiszStan();
+
+    const klon = document.documentElement.cloneNode(true);
+
+    // Kopiuj wartości textarea
+    const tOryg = document.querySelectorAll('textarea');
+    const tKlon = klon.querySelectorAll('textarea');
+    tOryg.forEach((el, i) => {
+      if (!tKlon[i]) return;
+      tKlon[i].innerHTML = el.value
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    });
+
+    // Kopiuj wartości inputów
+    const inpOryg = document.querySelectorAll('input[type="text"], input[type="email"]');
+    const inpKlon = klon.querySelectorAll('input[type="text"], input[type="email"]');
+    inpOryg.forEach((el, i) => {
+      if (inpKlon[i]) inpKlon[i].setAttribute('value', el.value);
+    });
+
+    // Kopiuj progress
+    const fillEl  = document.getElementById('progress-fill');
+    const countEl = document.getElementById('progress-count');
+    const fk = klon.querySelector('#progress-fill');
+    const ck = klon.querySelector('#progress-count');
+    if (fillEl && fk)   fk.style.width  = fillEl.style.width;
+    if (countEl && ck)  ck.textContent  = countEl.textContent;
+
+    // Usuń sekcję pobierania i błędy
+    klon.querySelectorAll('.pobierz-section').forEach(el => el.remove());
+    klon.querySelectorAll('.error-msg').forEach(el => { el.style.display = 'none'; });
+    klon.querySelector('body').setAttribute('data-downloaded', 'true');
+
+    const imie = document.getElementById('uczestnik-imie').value.trim();
+    const safeName = imie.replace(/[^a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]/g, '').replace(/\s+/g, '_') || 'uczestnik';
+
+    const html = '<!DOCTYPE html>\n' + klon.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      alert('Twój formularz otworzył się w nowej karcie.\n\nJak go zapisać na iPhone:\n1. Naciśnij ikonę udostępniania (prostokąt ze strzałką)\n2. Wybierz „Zapisz na urządzeniu" lub „Pliki"\n3. Gotowe — prześlij przez formularz.');
+      return;
+    }
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'W13_Plan_Kwartalny_' + safeName + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ── INIT ──────────────────────────────────────────────────────────────────
+
+  window.addEventListener('DOMContentLoaded', () => {
+    wczytajStan();
+    updateProgress();
+    updatePobierzBtn();
+  });
+</script>
+
+</body>
+</html>
